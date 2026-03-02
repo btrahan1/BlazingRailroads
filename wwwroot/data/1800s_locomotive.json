@@ -1,0 +1,234 @@
+{
+  "Name": "1800s_American_440_Locomotive",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "main_chassis",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, 0.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 0.2, 5.0],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "boiler_body",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 1.1, 0.5],
+      "Rotation": [90, 0, 0],
+      "Scale": [1.0, 3.8, 1.0],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "loco_cab",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.6, -1.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 1.6, 1.4],
+      "ColorHex": "#5C1616",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cab_roof",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.45, -1.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.6, 0.1, 1.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "smoke_stack",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 2.2, 2.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.6, 1.4, 0.6],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pilot_cowcatcher",
+      "ParentId": null,
+      "Shape": "Cone",
+      "Position": [0, 0.4, 2.8],
+      "Rotation": [-90, 0, 0],
+      "Scale": [1.3, 1.0, 0.8],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "steam_dome",
+      "ParentId": null,
+      "Shape": "Capsule",
+      "Position": [0, 1.7, 0.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.5, 0.6, 0.5],
+      "ColorHex": "#D4AF37",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "sand_box",
+      "ParentId": null,
+      "Shape": "Capsule",
+      "Position": [0, 1.7, -0.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.5, 0.5, 0.5],
+      "ColorHex": "#D4AF37",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "headlight_box",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.8, 2.4],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.4, 0.4, 0.4],
+      "ColorHex": "#333333",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "headlight_lens",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [0, 1.8, 2.6],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.3, 0.1],
+      "ColorHex": "#FFFFAA",
+      "Material": "Glow",
+      "Operation": "Union"
+    },
+    {
+      "Id": "drive_wheel_L1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.65, 0.6, -0.4],
+      "Rotation": [0, 0, 90],
+      "Scale": [1.2, 0.15, 1.2],
+      "ColorHex": "#CC0000",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "drive_wheel_R1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.65, 0.6, -0.4],
+      "Rotation": [0, 0, 90],
+      "Scale": [1.2, 0.15, 1.2],
+      "ColorHex": "#CC0000",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "drive_wheel_L2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.65, 0.6, -1.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [1.2, 0.15, 1.2],
+      "ColorHex": "#CC0000",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "drive_wheel_R2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.65, 0.6, -1.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [1.2, 0.15, 1.2],
+      "ColorHex": "#CC0000",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pilot_wheel_L1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.5, 0.3, 1.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.6, 0.1, 0.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pilot_wheel_R1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.5, 0.3, 1.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.6, 0.1, 0.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pilot_wheel_L2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.5, 0.3, 2.3],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.6, 0.1, 0.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pilot_wheel_R2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.5, 0.3, 2.3],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.6, 0.1, 0.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "drive_wheel_L1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "drive_wheel_R1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "drive_wheel_L2",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "drive_wheel_R2",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    }
+  ]
+}

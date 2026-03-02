@@ -1,0 +1,213 @@
+{
+  "Name": "1800s_Victorian_Train_Station",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "platform_base",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [3.5, 0.15, 0.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [6.0, 0.3, 20.0],
+      "ColorHex": "#4A453F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_building_core",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [6.0, 2.0, 0.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.0, 4.0, 8.0],
+      "ColorHex": "#802020",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "waiting_room_wing_north",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [6.0, 1.25, 6.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.0, 2.5, 5.0],
+      "ColorHex": "#802020",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "baggage_wing_south",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [6.0, 1.25, -6.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.0, 2.5, 5.0],
+      "ColorHex": "#802020",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_roof_slope_a",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [6.0, 4.5, 0.0],
+      "Rotation": [0, 0, 35],
+      "Scale": [3.0, 0.2, 8.2],
+      "ColorHex": "#2F2F2F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_roof_slope_b",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [6.0, 4.5, 0.0],
+      "Rotation": [0, 0, -35],
+      "Scale": [3.0, 0.2, 8.2],
+      "ColorHex": "#2F2F2F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "platform_overhang",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.5, 3.5, 0.0],
+      "Rotation": [0, 0, 10],
+      "Scale": [5.0, 0.1, 19.0],
+      "ColorHex": "#3D3D3D",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pillar_1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.8, 1.75, 8.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3.5, 0.2],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pillar_2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.8, 1.75, 3.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3.5, 0.2],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pillar_3",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.8, 1.75, -3.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3.5, 0.2],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pillar_4",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.8, 1.75, -8.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3.5, 0.2],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "station_clock_face",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [4.0, 3.2, 0.0],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.8, 0.1, 0.8],
+      "ColorHex": "#FFFFFF",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "bench_1",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.5, 0.5, 4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.8, 0.4, 2.0],
+      "ColorHex": "#3D251E",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "bench_2",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.5, 0.5, -4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.8, 0.4, 2.0],
+      "ColorHex": "#3D251E",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "luggage_crate_large",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [3.0, 0.6, -7.5],
+      "Rotation": [0, 15, 0],
+      "Scale": [1.0, 1.0, 1.0],
+      "ColorHex": "#6F4E37",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "luggage_crate_small",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [3.0, 0.4, -8.5],
+      "Rotation": [0, -10, 0],
+      "Scale": [0.6, 0.6, 0.6],
+      "ColorHex": "#5C4033",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_main_1",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [4.0, 2.5, 2.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 1.2, 0.8],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_main_2",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [4.0, 2.5, -2.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 1.2, 0.8],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Color",
+      "TargetId": "station_clock_face",
+      "Value": [1, 1, 0.9],
+      "Duration": 1.0
+    }
+  ]
+}

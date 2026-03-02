@@ -1,0 +1,242 @@
+{
+  "Name": "1800s_Wooden_Passenger_Coach",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "coach_chassis",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.4, 0.2, 8.5],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_body",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.4, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 1.8, 7.5],
+      "ColorHex": "#4B2E2E",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "roof_base",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.35, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.6, 0.15, 7.7],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "clerestory_roof",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.5, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.8, 0.3, 7.0],
+      "ColorHex": "#333333",
+      "Material": "Wood",
+      "Operation": "Union"
+    },
+    {
+      "Id": "platform_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.45, 4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 0.1, 0.5],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "platform_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.45, -4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 0.1, 0.5],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_row_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0.76, 1.6, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.05, 0.8, 6.5],
+      "ColorHex": "#87CEEB",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_row_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-0.76, 1.6, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.05, 0.8, 6.5],
+      "ColorHex": "#87CEEB",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_f_l1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, 2.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_f_r1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, 2.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_f_l2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, 1.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_f_r2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, 1.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_b_l1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, -1.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_b_r1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, -1.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_b_l2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, -2.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_truck_b_r2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, -2.8],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.1, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "railing_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.8, 4.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.4, 0.7, 0.05],
+      "ColorHex": "#D4AF37",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "railing_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.8, -4.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.4, 0.7, 0.05],
+      "ColorHex": "#D4AF37",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.35, 4.3],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.2, 0.4],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.35, -4.3],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.2, 0.4],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_truck_f_l1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_truck_f_r1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    }
+  ]
+}

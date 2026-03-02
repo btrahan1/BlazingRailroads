@@ -1,0 +1,24 @@
+{
+    "blueprints": [
+        {
+            "id": "steam_locomotive",
+            "name": "1800s Steam Locomotive",
+            "recipe": "data/1800s_locomotive.json"
+        },
+        {
+            "id": "train_station",
+            "name": "1800s Victorian Train Station",
+            "recipe": "data/1800s_station.json"
+        },
+        {
+            "id": "passenger_coach",
+            "name": "1800s Wooden Passenger Coach",
+            "recipe": "data/1800s_passenger_coach.json"
+        },
+        {
+            "id": "coal_tender",
+            "name": "1800s Coal Tender",
+            "recipe": "data/1800s_coal_tender.json"
+        }
+    ]
+}

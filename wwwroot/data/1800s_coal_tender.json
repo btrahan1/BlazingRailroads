@@ -1,0 +1,198 @@
+{
+  "Name": "1800s_Coal_Tender",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "tender_chassis",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.4, 0.2, 4.2],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "body_floor",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.5, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.3, 0.1, 4.0],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wall_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0.65, 1.0, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 1.0, 4.0],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wall_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-0.65, 1.0, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 1.0, 4.0],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wall_rear",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.0, -1.95],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 1.0, 0.1],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wall_front_gate",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.75, 1.95],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 0.5, 0.1],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coal_pile_main",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [0, 1.1, 0.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.1, 0.8, 2.8],
+      "ColorHex": "#0A0A0A",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coal_bump_1",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [0.3, 1.4, 0.5],
+      "Rotation": [20, 45, 0],
+      "Scale": [0.6, 0.5, 0.6],
+      "ColorHex": "#111111",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coal_bump_2",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [-0.2, 1.5, -0.4],
+      "Rotation": [-10, 12, 0],
+      "Scale": [0.7, 0.4, 0.7],
+      "ColorHex": "#050505",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "water_hatch",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 1.5, -1.4],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.6, 0.1, 0.6],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_l1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, 1.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.15, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_r1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, 1.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.15, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_l2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.55, 0.25, -1.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.15, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_r2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-0.55, 0.25, -1.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.5, 0.15, 0.5],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.35, 2.15],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 0.2, 0.3],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_rear",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.35, -2.15],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 0.2, 0.3],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_l1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_r1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    }
+  ]
+}
