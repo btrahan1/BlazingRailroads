@@ -39,6 +39,14 @@ window.railroadEngine = {
         // Initialize loco state (will snap properly to track later, after curve generation)
         this.locoNode = await window.railroadAssets.spawnObject("steam_locomotive", new BABYLON.Vector3(0, 0, 0));
 
+        // Default train has a caboose at the end
+        const cabooseNode = await window.railroadAssets.spawnObject("caboose", new BABYLON.Vector3(0, 0, 0));
+        if (cabooseNode) {
+            cabooseNode.carLengthFrames = 3.2; // roughly
+            cabooseNode.isCaboose = true;
+            this.passengerCars.push(cabooseNode);
+        }
+
         // Snap Loco to start exactly at the station
         if (this.locoNode) {
             this.updateTrainTransforms(this.startFrame);
@@ -313,8 +321,32 @@ window.railroadEngine = {
         }
     },
 
+    addOilTankCar: async function () {
+        console.log("Adding oil tank car...");
+        const newCar = await window.railroadAssets.spawnObject("oil_tank_car", new BABYLON.Vector3(0, 0, 0));
+        if (newCar) {
+            newCar.carLengthFrames = 3.5;
+            this.attachCar(newCar);
+        }
+    },
+
+    addFreightBoxcar: async function () {
+        console.log("Adding freight boxcar...");
+        const newCar = await window.railroadAssets.spawnObject("freight_boxcar", new BABYLON.Vector3(0, 0, 0));
+        if (newCar) {
+            newCar.carLengthFrames = 3.5;
+            this.attachCar(newCar);
+        }
+    },
+
     attachCar: function (newCar) {
-        this.passengerCars.push(newCar);
+        // All added cars should be in front of the caboose
+        if (this.passengerCars.length > 0 && this.passengerCars[this.passengerCars.length - 1].isCaboose) {
+            this.passengerCars.splice(this.passengerCars.length - 1, 0, newCar);
+        } else {
+            this.passengerCars.push(newCar);
+        }
+
         if (!this.isAnimating) {
             this.updateTrainTransforms(this.startFrame);
         }
@@ -322,6 +354,11 @@ window.railroadEngine = {
 
     removeSelectedCar: function () {
         if (this.selectedCar) {
+            if (this.selectedCar.isCaboose) {
+                console.log("Cannot remove the caboose!");
+                return;
+            }
+
             console.log("Removing selected car...");
             const idx = this.passengerCars.indexOf(this.selectedCar);
             if (idx > -1) {

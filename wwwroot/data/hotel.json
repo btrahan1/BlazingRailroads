@@ -1,0 +1,202 @@
+{
+  "Name": "1800s_Railroad_Hotel",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "foundation",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.25, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [10.5, 0.5, 12.5],
+      "ColorHex": "#4A453F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "ground_floor",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.0, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [10, 3, 12],
+      "ColorHex": "#F5F5DC",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "second_floor",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 5.0, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [10, 3, 12],
+      "ColorHex": "#F5F5DC",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_deck",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.6, 7.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [11, 0.2, 3],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_pillar_1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [5.2, 2.0, 8.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3, 0.2],
+      "ColorHex": "#FFFFFF",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_pillar_2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.8, 2.0, 8.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3, 0.2],
+      "ColorHex": "#FFFFFF",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_pillar_3",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.8, 2.0, 8.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3, 0.2],
+      "ColorHex": "#FFFFFF",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_pillar_4",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-5.2, 2.0, 8.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 3, 0.2],
+      "ColorHex": "#FFFFFF",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "balcony_deck",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.5, 7.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [11, 0.2, 3],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "roof_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.6, 7.8, 0],
+      "Rotation": [0, 0, -35],
+      "Scale": [6.5, 0.3, 13],
+      "ColorHex": "#3E2723",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "roof_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-2.6, 7.8, 0],
+      "Rotation": [0, 0, 35],
+      "Scale": [6.5, 0.3, 13],
+      "ColorHex": "#3E2723",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "chimney",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [3.5, 8.5, -3],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 5, 1.2],
+      "ColorHex": "#7B3F00",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_door",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.8, 6.05],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 2.2, 0.1],
+      "ColorHex": "#3E2723",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_front_1",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [3, 2.0, 6.05],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 1.8, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_front_2",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-3, 2.0, 6.05],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.5, 1.8, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "hotel_sign_board",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.8, 9.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [4, 1.2, 0.1],
+      "ColorHex": "#FFFFFF",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "hotel_sign_text_backing",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.8, 9.06],
+      "Rotation": [0, 0, 0],
+      "Scale": [3.5, 0.8, 0.05],
+      "ColorHex": "#D4AF37",
+      "Material": "Glow",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Color",
+      "TargetId": "hotel_sign_text_backing",
+      "Value": [1, 0.84, 0],
+      "Duration": 2.0
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "Name": "Freight_Boxcar_1880",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "chassis_main",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.6, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.6, 0.3, 8.0],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_f_l1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, 3.0],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_f_r1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, 3.0],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_f_l2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, 2.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_f_r2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, 2.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_b_l1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, -3.0],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_b_r1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, -3.0],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_b_l2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, -2.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_b_r2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, -2.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cargo_body",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.9, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.5, 2.4, 7.6],
+      "ColorHex": "#5D4037",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "door_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [1.26, 1.9, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 2.0, 1.8],
+      "ColorHex": "#4E342E",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "door_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-1.26, 1.9, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 2.0, 1.8],
+      "ColorHex": "#4E342E",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "roof_walkway",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.15, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.6, 0.1, 8.0],
+      "ColorHex": "#3E2723",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "ladder_f_r",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-1.1, 1.9, 3.85],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 2.4, 0.05],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "ladder_b_l",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [1.1, 1.9, -3.85],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 2.4, 0.05],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "brake_wheel_shaft",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.8, 3.3, 3.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.05, 0.4, 0.05],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "brake_wheel",
+      "ParentId": null,
+      "Shape": "Torus",
+      "Position": [0.8, 3.5, 3.8],
+      "Rotation": [90, 0, 0],
+      "Scale": [0.4, 0.4, 0.1],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.5, 4.1],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.3, 0.4],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.5, -4.1],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.3, 0.4],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_f_l1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_b_l1",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Move",
+      "TargetId": "door_left",
+      "Value": [1.26, 1.9, 1.5],
+      "Duration": 4.0
+    }
+  ]
+}

@@ -16,6 +16,12 @@
         <button @onclick="AddPassengerCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #27ae60; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             + Add Passenger Car
         </button>
+        <button @onclick="AddOilTankCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Oil Tank Car
+        </button>
+        <button @onclick="AddFreightBoxcar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #d35400; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Freight Boxcar
+        </button>
         <button @onclick="RemoveSelectedCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #c0392b; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             - Remove Selected Car
         </button>
@@ -102,6 +108,16 @@
     private async Task AddCoalTender()
     {
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.addCoalTender");
+    }
+
+    private async Task AddOilTankCar()
+    {
+        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addOilTankCar");
+    }
+
+    private async Task AddFreightBoxcar()
+    {
+        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addFreightBoxcar");
     }
 
     private async Task RemoveSelectedCar()

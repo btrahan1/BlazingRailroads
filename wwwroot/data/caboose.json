@@ -1,0 +1,242 @@
+{
+  "Name": "Caboose_1880_HighFidelity",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "chassis_main",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.6, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.6, 0.2, 7.0],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "truck_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, 2.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.2, 0.2, 1.4],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "truck_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, -2.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.2, 0.2, 1.4],
+      "ColorHex": "#222222",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_fl",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, 2.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_fr",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, 2.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_bl",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [1.0, 0.35, -2.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_br",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.0, 0.35, -2.6],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.7, 0.2, 0.7],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "body_main",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.7, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.4, 2.0, 5.0],
+      "ColorHex": "#8B0000",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "roof_main",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.7, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.8, 0.15, 5.4],
+      "ColorHex": "#2F2F2F",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cupola_base",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.1, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.4, 0.7, 1.8],
+      "ColorHex": "#8B0000",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cupola_roof",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 3.5, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.6, 0.1, 2.0],
+      "ColorHex": "#2F2F2F",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.9, 2.51],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.6, 0.8, 0.05],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "stove_chimney",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0.7, 3.2, 1.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.15, 1.2, 0.15],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "platform_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.65, 3.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.6, 0.1, 1.0],
+      "ColorHex": "#3D2B1F",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "platform_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.65, -3.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.6, 0.1, 1.0],
+      "ColorHex": "#3D2B1F",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "railing_front_top",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 1.2, 3.4],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.05, 2.6, 0.05],
+      "ColorHex": "#C0C0C0",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "ladder_back",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [1.0, 1.7, -2.6],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 2.2, 0.05],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coupler_front",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.5, 3.6],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.3, 0.3, 0.4],
+      "ColorHex": "#111111",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "lantern_bracket",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-1.1, 2.4, -2.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 0.4, 0.1],
+      "ColorHex": "#444444",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "lantern_glow",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [-1.1, 2.6, -2.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 0.2, 0.2],
+      "ColorHex": "#FF4500",
+      "Material": "Glow",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_fl",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "wheel_fr",
+      "Value": [360, 0, 90],
+      "Duration": 2.0
+    }
+  ]
+}

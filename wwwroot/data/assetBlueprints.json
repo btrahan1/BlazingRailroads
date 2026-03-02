@@ -19,6 +19,26 @@
             "id": "coal_tender",
             "name": "1800s Coal Tender",
             "recipe": "data/1800s_coal_tender.json"
+        },
+        {
+            "id": "hotel",
+            "name": "1800s Railroad Hotel",
+            "recipe": "data/hotel.json"
+        },
+        {
+            "id": "caboose",
+            "name": "1880 High Fidelity Caboose",
+            "recipe": "data/caboose.json"
+        },
+        {
+            "id": "oil_tank_car",
+            "name": "1880 Oil Tank Car",
+            "recipe": "data/oil_tank_car.json"
+        },
+        {
+            "id": "freight_boxcar",
+            "name": "1880 Freight Boxcar",
+            "recipe": "data/freight_boxcar.json"
         }
     ]
 }
