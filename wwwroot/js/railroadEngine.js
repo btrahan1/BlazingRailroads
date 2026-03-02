@@ -22,7 +22,7 @@ window.railroadEngine = {
     isAnimating: false,
     passengerCars: [],
     selectedCar: null,
-    startFrame: 20, // Start align with the station
+    startFrame: 30, // Start align with the station (L=60, res=60 -> center is 30)
     currentTownName: "",
 
     init: async function (canvasId, initialTownName) {
@@ -135,8 +135,9 @@ window.railroadEngine = {
         // Detailed Oval Track
         const path = [];
         const R = 30; // Curve radius
-        const L = 40; // Half-length of straight section
-        const res = 40; // Resolution per segment
+        const L = 60; // Half-length of straight section
+        const res = 60; // Resolution per segment
+        this.straightRes = res;
 
         // Bottom straight (z=0)
         for (let i = 0; i <= res; i++) path.push(new BABYLON.Vector3(-L + (2 * L * i / res), 0.05, 0));
@@ -168,7 +169,7 @@ window.railroadEngine = {
 
         // Entry Track (-x side, arriving from west straight to bottom track)
         const entryPath = [];
-        for (let i = 30; i >= 0; i--) entryPath.push(new BABYLON.Vector3(-L - (i * 2), 0.05, 0));
+        for (let i = 60; i >= 0; i--) entryPath.push(new BABYLON.Vector3(-L - (i * 2), 0.05, 0));
 
         const entryTrackData = this.renderTrackGeometry(entryPath, scene, tieMesh);
         if (entryTrackData) {
@@ -178,7 +179,7 @@ window.railroadEngine = {
 
         // Departure Track (+x side, departing east straight from bottom track)
         const departPath = [];
-        for (let i = 0; i <= 30; i++) departPath.push(new BABYLON.Vector3(L + (i * 2), 0.05, 0));
+        for (let i = 0; i <= 60; i++) departPath.push(new BABYLON.Vector3(L + (i * 2), 0.05, 0));
 
         const departTrackData = this.renderTrackGeometry(departPath, scene, tieMesh);
         if (departTrackData) {
@@ -344,12 +345,11 @@ window.railroadEngine = {
         let maxTrack = this.trackCurve.length - 1;
 
         if (this.animState === this.STATE_DEPARTING) {
-            // The bottom straight away is indexes 0 to 40 (length of L=40 with res=40).
             // We want it to drive straight out starting after the straightaway.
-            if (f > 40) {
+            if (f > this.straightRes) {
                 curve = this.departCurve;
                 tangents = this.departTangents;
-                p = f - 40;
+                p = f - this.straightRes;
                 isWrapped = false;
             } else {
                 p = f % (maxTrack + 1);
@@ -415,7 +415,8 @@ window.railroadEngine = {
 
         let frame = this.startFrame;
         const speed = 0.05;
-        const departEndFrame = 40 + this.departCurve.length + 50;
+        // Trigger the transition BEFORE we run out of new geometry so the train doesn't park before cutting!
+        const departEndFrame = this.straightRes + 50;
 
         this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
             this.updateTrainTransforms(frame);
