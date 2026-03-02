@@ -6,21 +6,70 @@
 <div style="width: 100vw; height: 100vh; overflow: hidden; margin: 0; padding: 0; position: relative;">
     <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; outline: none;"></canvas>
     
+    @if (currentState == GameState.MainMenu)
+    {
+        <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #2c3e50; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;">
+            <h1 style="color: #f1c40f; font-family: 'Times New Roman', serif; font-size: 5rem; margin-bottom: 50px; text-shadow: 3px 3px 6px #000;">Blazing Railroads</h1>
+            <button @onclick="StartNewGame" style="padding: 15px 40px; font-size: 1.5rem; cursor: pointer; background-color: #27ae60; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); margin-bottom: 20px;">
+                Start New Game
+            </button>
+            @if (hasSaveGame)
+            {
+                <button @onclick="ContinueGame" style="padding: 15px 40px; font-size: 1.5rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                    Continue
+                </button>
+            }
+        </div>
+    }
+
+    @if (currentState == GameState.InGame)
+    {
+        <div style="position: absolute; bottom: 30px; left: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 10px; color: white; font-family: 'Times New Roman', serif;">
+            <h2 style="margin: 0; font-size: 2rem; color: #f1c40f;">$@funds</h2>
+            <h4 style="margin: 0; font-size: 1.2rem; color: #ecf0f1;">Train Capacity: @currentCarCount / @MAX_CARS</h4>
+            <button @onclick="UnloadTrain" disabled="@(currentCarCount == 0)" style="margin-top: 10px; padding: 10px; font-size: 1.2rem; cursor: pointer; background-color: #e74c3c; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-weight: bold;">
+                💰 UNLOAD TRAIN
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div style="position: absolute; top: 120px; left: 50%; transform: translateX(-50%); background-color: rgba(231, 76, 60, 0.9); padding: 15px 30px; border-radius: 8px; color: white; font-family: 'Times New Roman', serif; font-size: 1.5rem; font-weight: bold; border: 2px solid #c0392b; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                @errorMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(arrivalMessage))
+        {
+            <div style="position: absolute; top: 200px; left: 50%; transform: translateX(-50%); background-color: rgba(46, 204, 113, 0.9); padding: 15px 30px; border-radius: 8px; color: white; font-family: 'Times New Roman', serif; font-size: 1.5rem; font-weight: bold; border: 2px solid #27ae60; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                @arrivalMessage
+            </div>
+        }
+
+    <div style="position: absolute; top: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10;">
+        <button @onclick="BuildHotel" disabled="@(funds < COST_HOTEL)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f1c40f; color: #2c3e50; border: 2px solid #f39c12; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            🏗️ Build Hotel ($@COST_HOTEL)
+        </button>
+        <span style="color: white; font-family: 'Times New Roman', serif; text-shadow: 1px 1px 2px black; font-size: 0.9rem; text-align: center;">
+            (Press 'R' to Rotate, 'ESC' to Cancel)
+        </span>
+    </div>
+
     <div style="position: absolute; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10;">
         <button @onclick="ToggleMap" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f39c12; color: #fff; border: 2px solid #e67e22; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
             🗺️ Open Travel Map
         </button>
-        <button @onclick="AddCoalTender" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #8e44ad; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-            + Add Coal Tender
+        <button @onclick="AddCoalTender" disabled="@(funds < COST_COAL || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #8e44ad; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Coal Tender ($@COST_COAL)
         </button>
-        <button @onclick="AddPassengerCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #27ae60; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-            + Add Passenger Car
+        <button @onclick="AddPassengerCar" disabled="@(funds < COST_PASSENGER || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #27ae60; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Passenger Car ($@COST_PASSENGER)
         </button>
-        <button @onclick="AddOilTankCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-            + Add Oil Tank Car
+        <button @onclick="AddOilTankCar" disabled="@(funds < COST_OIL || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Oil Tank Car ($@COST_OIL)
         </button>
-        <button @onclick="AddFreightBoxcar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #d35400; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-            + Add Freight Boxcar
+        <button @onclick="AddFreightBoxcar" disabled="@(funds < COST_FREIGHT || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #d35400; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Freight Boxcar ($@COST_FREIGHT)
         </button>
         <button @onclick="RemoveSelectedCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #c0392b; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             - Remove Selected Car
@@ -44,11 +93,53 @@
             </div>
         </div>
     }
+    }
 </div>
 
 @code {
+    public enum GameState
+    {
+        MainMenu,
+        InGame
+    }
+    
+    private GameState currentState = GameState.MainMenu;
+    private bool hasSaveGame = false;
     private bool isMapVisible = false;
     private Town currentTown;
+    private string errorMessage = "";
+    private string arrivalMessage = "";
+    
+    // Economy
+    private int funds = 1000;
+    private int currentCarCount = 0;
+    private const int MAX_CARS = 5;
+
+    public class BuildingData
+    {
+        public string Type { get; set; } = "";
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+        public float RotY { get; set; }
+    }
+
+    private Dictionary<string, List<BuildingData>> townLayouts = new();
+
+    public class GameSaveData
+    {
+        public int Funds { get; set; }
+        public string CurrentTown { get; set; } = "";
+        public List<string> TrainLoadout { get; set; } = new();
+        public Dictionary<string, List<BuildingData>> TownLayouts { get; set; } = new();
+    }
+
+    // Car Costs
+    private const int COST_COAL = 100;
+    private const int COST_PASSENGER = 0;
+    private const int COST_FREIGHT = 100;
+    private const int COST_OIL = 200;
+    private const int COST_HOTEL = 1000;
 
     private class Town
     {
@@ -67,17 +158,115 @@
         new Town { Name = "Sacramento", Top = "45%", Left = "10%" }
     };
 
+    public static Action<string, string, float, float, float, float> OnBuildingPlacedAction;
+
+    [JSInvokable]
+    public static void OnBuildingPlaced(string town, string type, float x, float y, float z, float rotY)
+    {
+        OnBuildingPlacedAction?.Invoke(town, type, x, y, z, rotY);
+    }
+
     protected override void OnInitialized()
     {
         currentTown = towns.First(t => t.Name == "Sacramento");
+        OnBuildingPlacedAction = HandleBuildingPlaced;
+    }
+
+    private void HandleBuildingPlaced(string town, string type, float x, float y, float z, float rotY)
+    {
+        if (funds >= COST_HOTEL && type == "hotel")
+        {
+            funds -= COST_HOTEL;
+
+            if (!townLayouts.ContainsKey(town))
+                townLayouts[town] = new List<BuildingData>();
+
+            townLayouts[town].Add(new BuildingData { Type = type, X = x, Y = y, Z = z, RotY = rotY });
+
+            _ = InvokeAsync(async () =>
+            {
+                await SaveGameAsync();
+                StateHasChanged();
+            });
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("window.railroadEngine.init", "renderCanvas", currentTown.Name);
+            var saveJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "blazingRailroadsSave");
+            if (!string.IsNullOrEmpty(saveJson))
+            {
+                hasSaveGame = true;
+                StateHasChanged();
+            }
         }
+    }
+
+    private async Task StartNewGame()
+    {
+        funds = 1000;
+        currentTown = towns.First(t => t.Name == "Sacramento");
+        townLayouts = new Dictionary<string, List<BuildingData>>();
+        currentState = GameState.InGame;
+        StateHasChanged();
+        
+        // Wait a small tick so DOM can register the hidden overlay / canvas focus
+        await Task.Delay(50);
+        await JSRuntime.InvokeVoidAsync("window.railroadEngine.init", "renderCanvas", currentTown.Name);
+        await UpdateCarCount();
+        await SaveGameAsync();
+    }
+
+    private async Task ContinueGame()
+    {
+        var saveJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "blazingRailroadsSave");
+        if (!string.IsNullOrEmpty(saveJson))
+        {
+            var saveData = System.Text.Json.JsonSerializer.Deserialize<GameSaveData>(saveJson);
+            if (saveData != null)
+            {
+                funds = saveData.Funds;
+                currentTown = towns.FirstOrDefault(t => t.Name == saveData.CurrentTown) ?? towns.First();
+                
+                currentState = GameState.InGame;
+                StateHasChanged(); 
+
+                await Task.Delay(50);
+                await JSRuntime.InvokeVoidAsync("window.railroadEngine.init", "renderCanvas", currentTown.Name);
+                
+                if (saveData.TrainLoadout != null && saveData.TrainLoadout.Count > 0)
+                {
+                    await JSRuntime.InvokeVoidAsync("window.railroadEngine.restoreTrain", saveData.TrainLoadout);
+                }
+
+                if (saveData.TownLayouts != null)
+                {
+                    townLayouts = saveData.TownLayouts;
+                    if (townLayouts.ContainsKey(currentTown.Name))
+                    {
+                        await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", townLayouts[currentTown.Name]);
+                    }
+                }
+
+                await UpdateCarCount(); 
+            }
+        }
+    }
+
+    private async Task SaveGameAsync()
+    {
+        var loadout = await JSRuntime.InvokeAsync<List<string>>("window.railroadEngine.getTrainLoadout");
+        var saveData = new GameSaveData
+        {
+            Funds = funds,
+            CurrentTown = currentTown.Name,
+            TrainLoadout = loadout,
+            TownLayouts = townLayouts
+        };
+        var json = System.Text.Json.JsonSerializer.Serialize(saveData);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "blazingRailroadsSave", json);
     }
 
     private async Task StartSimulation()
@@ -88,40 +277,162 @@
     private void ToggleMap()
     {
         isMapVisible = !isMapVisible;
+        errorMessage = ""; // Clear errors when interacting with UI
     }
 
     private async Task TravelToTown(Town destination)
     {
         if (destination == currentTown) return;
+
+        bool hasCoal = await JSRuntime.InvokeAsync<bool>("window.railroadEngine.hasCoalTender");
+        if (!hasCoal)
+        {
+            errorMessage = "You need coal to travel!";
+            StateHasChanged();
+            
+            // clear after 3 seconds
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(3000);
+                errorMessage = "";
+                await InvokeAsync(StateHasChanged);
+            });
+            return;
+        }
         
+        errorMessage = "";
         isMapVisible = false;
         currentTown = destination;
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.beginTravel", destination.Name);
+        await SaveGameAsync();
         StateHasChanged();
+
+        // Calculate Passive Income upon arrival
+        _ = Task.Run(async () =>
+        {
+            // Wait for transition to complete
+            await Task.Delay(2500);
+            
+            int globalHotels = 0;
+            foreach (var townLayout in townLayouts.Values)
+            {
+                globalHotels += townLayout.Count(b => b.Type == "hotel");
+            }
+
+            if (globalHotels > 0)
+            {
+                int passiveIncome = globalHotels * 100;
+                funds += passiveIncome;
+                arrivalMessage = $"Funds received: ${passiveIncome} from business adventures!";
+                await SaveGameAsync();
+                await InvokeAsync(StateHasChanged);
+
+                await Task.Delay(4000);
+                arrivalMessage = "";
+                await InvokeAsync(StateHasChanged);
+            }
+
+            // Load new town buildings
+            if (townLayouts.ContainsKey(destination.Name))
+            {
+                await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", townLayouts[destination.Name]);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", new List<BuildingData>());
+            }
+        });
+    }
+
+    private async Task BuildHotel()
+    {
+        if (funds >= COST_HOTEL)
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "hotel");
+        }
     }
 
     private async Task AddPassengerCar()
     {
-        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addPassengerCar");
+        if (funds >= COST_PASSENGER && currentCarCount < MAX_CARS)
+        {
+            funds -= COST_PASSENGER;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.addPassengerCar");
+            await UpdateCarCount();
+            await SaveGameAsync();
+        }
     }
 
     private async Task AddCoalTender()
     {
-        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addCoalTender");
+        if (funds >= COST_COAL && currentCarCount < MAX_CARS)
+        {
+            funds -= COST_COAL;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.addCoalTender");
+            await UpdateCarCount();
+            await SaveGameAsync();
+        }
     }
 
     private async Task AddOilTankCar()
     {
-        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addOilTankCar");
+        if (funds >= COST_OIL && currentCarCount < MAX_CARS)
+        {
+            funds -= COST_OIL;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.addOilTankCar");
+            await UpdateCarCount();
+            await SaveGameAsync();
+        }
     }
 
     private async Task AddFreightBoxcar()
     {
-        await JSRuntime.InvokeVoidAsync("window.railroadEngine.addFreightBoxcar");
+        if (funds >= COST_FREIGHT && currentCarCount < MAX_CARS)
+        {
+            funds -= COST_FREIGHT;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.addFreightBoxcar");
+            await UpdateCarCount();
+            await SaveGameAsync();
+        }
     }
 
     private async Task RemoveSelectedCar()
     {
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.removeSelectedCar");
+        await UpdateCarCount();
+        await SaveGameAsync();
+    }
+
+    private async Task UpdateCarCount()
+    {
+        // Simple JS eval to count active passengerCars array minus Caboose
+        currentCarCount = await JSRuntime.InvokeAsync<int>("eval", "window.railroadEngine.passengerCars.filter(c => !c.isCaboose).length");
+        StateHasChanged();
+    }
+
+    private async Task UnloadTrain()
+    {
+        var revenues = await JSRuntime.InvokeAsync<List<CarRevenue>>("window.railroadEngine.getRevenueCars");
+        int totalPayout = 0;
+        foreach (var car in revenues)
+        {
+            totalPayout += car.Payout;
+        }
+
+        // Even if payout is 0, we still want to unload to consume coal
+        if (totalPayout > 0 || currentCarCount > 0)
+        {
+            funds += totalPayout;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.unloadCars");
+            await UpdateCarCount();
+            await SaveGameAsync();
+            errorMessage = ""; // clear possible coal warnings
+        }
+    }
+
+    private class CarRevenue
+    {
+        public string Type { get; set; } = "";
+        public int Payout { get; set; }
     }
 }

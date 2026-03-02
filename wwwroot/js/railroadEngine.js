@@ -25,6 +25,11 @@ window.railroadEngine = {
     startFrame: 30, // Start align with the station (L=60, res=60 -> center is 30)
     currentTownName: "",
 
+    // Building Placement System
+    placementMesh: null,
+    placementType: null,
+    buildingMeshes: [],
+
     init: async function (canvasId, initialTownName) {
         console.log("Railroad Engine Initializing...");
         this.canvas = document.getElementById(canvasId);
@@ -59,11 +64,22 @@ window.railroadEngine = {
         }
 
         this.engine.runRenderLoop(() => {
+            if (this.placementMesh) {
+                this.updatePlacementPreview();
+            }
             this.scene.render();
         });
 
         // Picking logic
         this.scene.onPointerDown = (evt, pickResult) => {
+            if (this.placementMesh) {
+                // If we are placing a building, click confirms placement.
+                if (pickResult.hit && pickResult.pickedMesh && pickResult.pickedMesh.name === "ground") {
+                    this.confirmPlacement();
+                }
+                return;
+            }
+
             if (pickResult.hit && pickResult.pickedMesh) {
                 let node = pickResult.pickedMesh.parent;
                 if (node && this.passengerCars.includes(node)) {
@@ -73,6 +89,16 @@ window.railroadEngine = {
                 }
             }
         };
+
+        document.addEventListener("keydown", (evt) => {
+            if (this.placementMesh) {
+                if (evt.key === "Escape") {
+                    this.cancelPlacement();
+                } else if (evt.key === "r" || evt.key === "R") {
+                    this.placementMesh.rotation.y += Math.PI / 2; // Rotate 90 degrees
+                }
+            }
+        });
 
         window.addEventListener("resize", () => {
             if (this.engine) {
@@ -303,20 +329,24 @@ window.railroadEngine = {
         }
     },
 
-    addPassengerCar: async function () {
-        console.log("Adding passenger car...");
-        const newCar = await window.railroadAssets.spawnObject("passenger_coach", new BABYLON.Vector3(0, 0, 0));
-        if (newCar) {
-            newCar.carLengthFrames = 3.5;
-            this.attachCar(newCar);
-        }
-    },
-
     addCoalTender: async function () {
         console.log("Adding coal tender...");
         const newCar = await window.railroadAssets.spawnObject("coal_tender", new BABYLON.Vector3(0, 0, 0));
         if (newCar) {
             newCar.carLengthFrames = 2.0; // Tenders are shorter
+            newCar.carType = "tender";
+            newCar.revenue = 0;
+            this.attachCar(newCar);
+        }
+    },
+
+    addPassengerCar: async function () {
+        console.log("Adding passenger car...");
+        const newCar = await window.railroadAssets.spawnObject("passenger_coach", new BABYLON.Vector3(0, 0, 0));
+        if (newCar) {
+            newCar.carLengthFrames = 3.5;
+            newCar.carType = "passenger";
+            newCar.revenue = 100;
             this.attachCar(newCar);
         }
     },
@@ -326,6 +356,8 @@ window.railroadEngine = {
         const newCar = await window.railroadAssets.spawnObject("oil_tank_car", new BABYLON.Vector3(0, 0, 0));
         if (newCar) {
             newCar.carLengthFrames = 3.5;
+            newCar.carType = "oil";
+            newCar.revenue = 400;
             this.attachCar(newCar);
         }
     },
@@ -335,6 +367,8 @@ window.railroadEngine = {
         const newCar = await window.railroadAssets.spawnObject("freight_boxcar", new BABYLON.Vector3(0, 0, 0));
         if (newCar) {
             newCar.carLengthFrames = 3.5;
+            newCar.carType = "freight";
+            newCar.revenue = 200;
             this.attachCar(newCar);
         }
     },
@@ -371,6 +405,92 @@ window.railroadEngine = {
             if (!this.isAnimating) {
                 this.updateTrainTransforms(this.startFrame);
             }
+        }
+    },
+
+    getRevenueCars: function () {
+        // Return an array of revenue data for Blazor to sum up
+        let revenues = [];
+        for (let i = 0; i < this.passengerCars.length; i++) {
+            let car = this.passengerCars[i];
+            if (car.revenue > 0) {
+                revenues.push({ type: car.carType, payout: car.revenue });
+            }
+        }
+        return revenues;
+    },
+
+    canAddCar: function () {
+        // Limit train to 5 cars total (excluding caboose)
+        let count = 0;
+        for (let i = 0; i < this.passengerCars.length; i++) {
+            if (!this.passengerCars[i].isCaboose) count++;
+        }
+        return count < 5;
+    },
+
+    hasCoalTender: function () {
+        for (let i = 0; i < this.passengerCars.length; i++) {
+            if (this.passengerCars[i].carType === "tender") return true;
+        }
+        return false;
+    },
+
+    unloadCars: function () {
+        // Loop backwards and delete all revenue-generating cars AND coal tenders
+        for (let i = this.passengerCars.length - 1; i >= 0; i--) {
+            let car = this.passengerCars[i];
+            if ((car.revenue && car.revenue > 0) || car.carType === "tender") {
+                car.dispose();
+                this.passengerCars.splice(i, 1);
+            }
+        }
+
+        // Snap the train back together flawlessly
+        if (!this.isAnimating) {
+            this.updateTrainTransforms(this.startFrame);
+        }
+        this.selectedCar = null;
+    },
+
+    getTrainLoadout: function () {
+        let loadout = [];
+        for (let i = 0; i < this.passengerCars.length; i++) {
+            if (!this.passengerCars[i].isCaboose) {
+                loadout.push(this.passengerCars[i].carType);
+            }
+        }
+        return loadout;
+    },
+
+    restoreTrain: async function (carTypesArray) {
+        console.log("Restoring train consist:", carTypesArray);
+        for (let type of carTypesArray) {
+            let newCar = null;
+            if (type === "tender") {
+                newCar = await window.railroadAssets.spawnObject("coal_tender", new BABYLON.Vector3(0, 0, 0));
+                if (newCar) { newCar.carLengthFrames = 2.0; newCar.carType = "tender"; newCar.revenue = 0; }
+            } else if (type === "passenger") {
+                newCar = await window.railroadAssets.spawnObject("passenger_coach", new BABYLON.Vector3(0, 0, 0));
+                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "passenger"; newCar.revenue = 100; }
+            } else if (type === "oil") {
+                newCar = await window.railroadAssets.spawnObject("oil_tank_car", new BABYLON.Vector3(0, 0, 0));
+                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "oil"; newCar.revenue = 400; }
+            } else if (type === "freight") {
+                newCar = await window.railroadAssets.spawnObject("freight_boxcar", new BABYLON.Vector3(0, 0, 0));
+                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "freight"; newCar.revenue = 200; }
+            }
+
+            if (newCar) {
+                if (this.passengerCars.length > 0 && this.passengerCars[this.passengerCars.length - 1].isCaboose) {
+                    this.passengerCars.splice(this.passengerCars.length - 1, 0, newCar);
+                } else {
+                    this.passengerCars.push(newCar);
+                }
+            }
+        }
+        if (!this.isAnimating) {
+            this.updateTrainTransforms(this.startFrame);
         }
     },
 
@@ -528,5 +648,102 @@ window.railroadEngine = {
                 setTimeout(() => { document.body.removeChild(overlay); }, 1000);
             }, 2500);
         }, 100);
+    },
+
+    // --- Building System ---
+
+    startPlacementMode: async function (buildingType) {
+        if (this.placementMesh) {
+            this.placementMesh.dispose();
+        }
+
+        console.log(`Starting placement mode for: ${buildingType}`);
+        this.placementType = buildingType;
+
+        // Spawn a ghost version of the building
+        if (buildingType === "hotel") {
+            this.placementMesh = await window.railroadAssets.spawnObject("hotel", new BABYLON.Vector3(0, 0, 0));
+        }
+
+        if (this.placementMesh) {
+            // Make semi-transparent and unpickable so the raycast hits the ground
+            this.placementMesh.getChildMeshes().forEach(m => {
+                m.visibility = 0.5;
+                m.isPickable = false;
+            });
+        }
+    },
+
+    updatePlacementPreview: function () {
+        if (!this.placementMesh) return;
+        const pickInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh.name === "ground");
+        if (pickInfo.hit) {
+            this.placementMesh.position = pickInfo.pickedPoint;
+            this.placementMesh.position.y = 0.1; // Float slightly above ground to prevent z-fighting
+        }
+    },
+
+    cancelPlacement: function () {
+        if (this.placementMesh) {
+            console.log("Canceling building placement.");
+            this.placementMesh.dispose();
+            this.placementMesh = null;
+            this.placementType = null;
+        }
+    },
+
+    confirmPlacement: function () {
+        if (!this.placementMesh) return;
+
+        console.log("Confirming building placement.");
+
+        // Make solid again and pickable
+        this.placementMesh.getChildMeshes().forEach(m => {
+            m.visibility = 1.0;
+            m.isPickable = true;
+        });
+
+        // Save metadata
+        this.placementMesh.buildingType = this.placementType;
+        this.buildingMeshes.push(this.placementMesh);
+
+        // Tell Blazor about the successful placement
+        DotNet.invokeMethodAsync('BlazingRailroads', 'OnBuildingPlaced',
+            this.currentTownName,
+            this.placementType,
+            this.placementMesh.position.x,
+            this.placementMesh.position.y,
+            this.placementMesh.position.z,
+            this.placementMesh.rotation.y
+        ).catch(err => {
+            console.error("Blazor Interop failed after building placement:", err);
+        });
+
+        this.placementMesh = null;
+        this.placementType = null;
+    },
+
+    loadTownBuildings: async function (buildingsArray) {
+        // Clear existing buildings
+        for (let b of this.buildingMeshes) {
+            b.dispose();
+        }
+        this.buildingMeshes = [];
+
+        if (!buildingsArray || buildingsArray.length === 0) return;
+
+        console.log(`Loading ${buildingsArray.length} buildings for town...`);
+        for (let data of buildingsArray) {
+            let newBuilding = null;
+            if (data.type === "hotel") {
+                newBuilding = await window.railroadAssets.spawnObject("hotel", new BABYLON.Vector3(data.x, data.y, data.z));
+            }
+
+            if (newBuilding) {
+                newBuilding.rotation.y = data.rotY || 0;
+                newBuilding.buildingType = data.type;
+                this.buildingMeshes.push(newBuilding);
+            }
+        }
     }
 };

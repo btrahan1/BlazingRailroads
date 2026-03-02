@@ -1,0 +1,23 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(6,1): error RZ9980: Unclosed tag 'div' with no matching end tag. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(25,6): error RZ1006: The if block is missing a closing "}" character.  Make sure you have a matching "}" character for all the "{" characters within this block, and that none of the "}" characters are being interpreted as markup. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(73,1): error RZ9981: Unexpected closing tag 'div' with no matching start tag. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(73,3): error RZ1026: Encountered end tag "div" with no matching start tag.  Are your start/end tags properly balanced? [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\obj\Debug\net9.0\Microsoft.CodeAnalysis.Razor.Compiler\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\Pages_Home_razor.g.cs(605,10): error CS1513: } expected [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(85,18): warning CS8618: Non-nullable field 'currentTown' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+
+Build FAILED.
+
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(85,18): warning CS8618: Non-nullable field 'currentTown' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(6,1): error RZ9980: Unclosed tag 'div' with no matching end tag. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(25,6): error RZ1006: The if block is missing a closing "}" character.  Make sure you have a matching "}" character for all the "{" characters within this block, and that none of the "}" characters are being interpreted as markup. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(73,1): error RZ9981: Unexpected closing tag 'div' with no matching start tag. [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\Pages\Home.razor(73,3): error RZ1026: Encountered end tag "div" with no matching start tag.  Are your start/end tags properly balanced? [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\obj\Debug\net9.0\Microsoft.CodeAnalysis.Razor.Compiler\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\Pages_Home_razor.g.cs(605,10): error CS1513: } expected [C:\Users\bartt\.gemini\antigravity\scratch\BlazingRailroads\BlazingRailroads.csproj]
+    1 Warning(s)
+    5 Error(s)
+
+Time Elapsed 00:00:01.30
+
+Workload updates are available. Run `dotnet workload list` for more information.
