@@ -7,6 +7,9 @@
     <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; outline: none;"></canvas>
     
     <div style="position: absolute; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10;">
+        <button @onclick="ToggleMap" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f39c12; color: #fff; border: 2px solid #e67e22; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            🗺️ Open Travel Map
+        </button>
         <button @onclick="AddCoalTender" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #8e44ad; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             + Add Coal Tender
         </button>
@@ -20,20 +23,75 @@
             START
         </button>
     </div>
+
+    @if (isMapVisible)
+    {
+        <div class="map-overlay">
+            <div class="map-container">
+                <button class="close-map-btn" @onclick="ToggleMap">X</button>
+                @foreach (var town in towns)
+                {
+                    <div class="town-node @(town == currentTown ? "current" : "")" style="top: @town.Top; left: @town.Left;" @onclick="() => TravelToTown(town)">
+                        <span class="town-label">@town.Name</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>
 
 @code {
+    private bool isMapVisible = false;
+    private Town currentTown;
+
+    private class Town
+    {
+        public string Name { get; set; } = "";
+        public string Top { get; set; } = "";
+        public string Left { get; set; } = "";
+    }
+
+    private List<Town> towns = new()
+    {
+        new Town { Name = "St. Joseph", Top = "45%", Left = "55%" },
+        new Town { Name = "Omaha", Top = "42%", Left = "53%" },
+        new Town { Name = "Cheyenne", Top = "38%", Left = "35%" },
+        new Town { Name = "Denver", Top = "48%", Left = "33%" },
+        new Town { Name = "Salt Lake City", Top = "35%", Left = "22%" },
+        new Town { Name = "Sacramento", Top = "45%", Left = "10%" }
+    };
+
+    protected override void OnInitialized()
+    {
+        currentTown = towns.First(t => t.Name == "Sacramento");
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("window.railroadEngine.init", "renderCanvas");
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.init", "renderCanvas", currentTown.Name);
         }
     }
 
     private async Task StartSimulation()
     {
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.startAnimation");
+    }
+
+    private void ToggleMap()
+    {
+        isMapVisible = !isMapVisible;
+    }
+
+    private async Task TravelToTown(Town destination)
+    {
+        if (destination == currentTown) return;
+        
+        isMapVisible = false;
+        currentTown = destination;
+        await JSRuntime.InvokeVoidAsync("window.railroadEngine.beginTravel", destination.Name);
+        StateHasChanged();
     }
 
     private async Task AddPassengerCar()

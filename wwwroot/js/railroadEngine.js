@@ -6,15 +6,30 @@ window.railroadEngine = {
     locoNode: null,
     trackCurve: null,
     trackTangents: null,
+    entryCurve: null,
+    entryTangents: null,
+    departCurve: null,
+    departTangents: null,
+    stationNode: null,
+    townLabelUI: null,
+
+    STATE_IDLE: 0,
+    STATE_LOOPING: 1,
+    STATE_DEPARTING: 2,
+    STATE_ARRIVING: 3,
+    animState: 0,
+
     isAnimating: false,
     passengerCars: [],
     selectedCar: null,
     startFrame: 20, // Start align with the station
+    currentTownName: "",
 
-    init: async function (canvasId) {
+    init: async function (canvasId, initialTownName) {
         console.log("Railroad Engine Initializing...");
         this.canvas = document.getElementById(canvasId);
         this.engine = new BABYLON.Engine(this.canvas, true);
+        this.currentTownName = initialTownName || "Sacramento";
 
         this.scene = this.createScene();
         window.railroadAssets.init(this.scene);
@@ -29,9 +44,10 @@ window.railroadEngine = {
             this.updateTrainTransforms(this.startFrame);
         }
 
-        const stationNode = await window.railroadAssets.spawnObject("train_station", new BABYLON.Vector3(0, 0, 12));
-        if (stationNode) {
-            stationNode.rotation.y = -Math.PI / 2; // Face parallel to the track, spun 180 degrees
+        this.stationNode = await window.railroadAssets.spawnObject("train_station", new BABYLON.Vector3(0, 0, 12));
+        if (this.stationNode) {
+            this.stationNode.rotation.y = -Math.PI / 2; // Face parallel to the track, spun 180 degrees
+            this.createStationText(this.currentTownName);
         }
 
         this.engine.runRenderLoop(() => {
@@ -57,6 +73,33 @@ window.railroadEngine = {
         });
     },
 
+    createStationText: function (name) {
+        if (!this.stationNode) return;
+
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        const rect1 = new BABYLON.GUI.Rectangle();
+        rect1.width = "250px";
+        rect1.height = "60px";
+        rect1.color = "#4a3b2c";
+        rect1.thickness = 4;
+        rect1.background = "#dfd2a5";
+        advancedTexture.addControl(rect1);
+
+        const text1 = new BABYLON.GUI.TextBlock();
+        text1.text = name;
+        text1.color = "#4a3b2c";
+        text1.fontFamily = "Times New Roman";
+        text1.fontSize = 24;
+        text1.fontWeight = "bold";
+        rect1.addControl(text1);
+
+        this.townLabelUI = text1;
+
+        rect1.linkWithMesh(this.stationNode);
+        rect1.linkOffsetY = -150; // Offset above the station
+    },
+
     selectCar: function (node) {
         // Deselect current
         if (this.selectedCar) {
@@ -78,7 +121,7 @@ window.railroadEngine = {
         this.camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 15, BABYLON.Vector3.Zero(), scene);
         this.camera.attachControl(this.canvas, true);
         this.camera.lowerRadiusLimit = 2;
-        this.camera.upperRadiusLimit = 100;
+        this.camera.upperRadiusLimit = 200;
 
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.8;
@@ -111,69 +154,91 @@ window.railroadEngine = {
         }
         path.push(path[0]); // Close the loop
 
-        const path3d = new BABYLON.Path3D(path);
-        this.trackCurve = path3d.getCurve();
-        this.trackTangents = path3d.getTangents();
-        const binormals = path3d.getBinormals();
-
-        // Rails
-        const rail1Path = [];
-        const rail2Path = [];
-        const railOffset = 0.4;
-        for (let i = 0; i < this.trackCurve.length; i++) {
-            const pt = this.trackCurve[i];
-            const binormal = binormals[i];
-            rail1Path.push(pt.add(binormal.scale(railOffset)));
-            rail2Path.push(pt.subtract(binormal.scale(railOffset)));
-        }
-
-        const railMat = new BABYLON.StandardMaterial("railMat", scene);
-        railMat.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-
-        const rail1 = BABYLON.MeshBuilder.CreateTube("rail1", { path: rail1Path, radius: 0.05, updatable: false }, scene);
-        rail1.material = railMat;
-        const rail2 = BABYLON.MeshBuilder.CreateTube("rail2", { path: rail2Path, radius: 0.05, updatable: false }, scene);
-        rail2.material = railMat;
-
-        // Wooden Ties (Instancing)
         const tieMat = new BABYLON.StandardMaterial("tieMat", scene);
         tieMat.diffuseColor = new BABYLON.Color3(0.4, 0.25, 0.15);
         tieMat.roughness = 0.9;
         const tieMesh = BABYLON.MeshBuilder.CreateBox("tieBase", { width: 0.25, height: 0.08, depth: 1.4 }, scene);
         tieMesh.material = tieMat;
 
-        const tieStep = 1.0;
-        let distAccum = 0;
-        let tieCount = 0;
-        for (let i = 0; i < this.trackCurve.length - 1; i++) {
-            const dist = BABYLON.Vector3.Distance(this.trackCurve[i], this.trackCurve[i + 1]);
-            distAccum += dist;
-            while (distAccum > tieStep) {
-                const inst = tieMesh.createInstance("tie_" + tieCount++);
-                inst.position = this.trackCurve[i].clone();
-                inst.position.y = 0.04;
-                inst.lookAt(this.trackCurve[i].add(this.trackTangents[i]));
-                inst.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.LOCAL);
-                distAccum -= tieStep;
-            }
+        const mainTrackData = this.renderTrackGeometry(path, scene, tieMesh);
+        if (mainTrackData) {
+            this.trackCurve = mainTrackData.curve;
+            this.trackTangents = mainTrackData.tangents;
         }
+
+        // Entry Track (-x side, arriving from west straight to bottom track)
+        const entryPath = [];
+        for (let i = 30; i >= 0; i--) entryPath.push(new BABYLON.Vector3(-L - (i * 2), 0.05, 0));
+
+        const entryTrackData = this.renderTrackGeometry(entryPath, scene, tieMesh);
+        if (entryTrackData) {
+            this.entryCurve = entryTrackData.curve;
+            this.entryTangents = entryTrackData.tangents;
+        }
+
+        // Departure Track (+x side, departing east straight from bottom track)
+        const departPath = [];
+        for (let i = 0; i <= 30; i++) departPath.push(new BABYLON.Vector3(L + (i * 2), 0.05, 0));
+
+        const departTrackData = this.renderTrackGeometry(departPath, scene, tieMesh);
+        if (departTrackData) {
+            this.departCurve = departTrackData.curve;
+            this.departTangents = departTrackData.tangents;
+        }
+
         tieMesh.setEnabled(false); // Hide the base tie
 
         return scene;
     },
 
+    renderTrackGeometry: function (pathArray, scene, tieMesh) {
+        if (!pathArray || pathArray.length < 2) return null;
+        const path3d = new BABYLON.Path3D(pathArray);
+        const curve = path3d.getCurve();
+        const binormals = path3d.getBinormals();
+        const tangents = path3d.getTangents();
+
+        const rail1Path = [];
+        const rail2Path = [];
+        const railOffset = 0.4;
+        for (let i = 0; i < curve.length; i++) {
+            const pt = curve[i];
+            const binormal = binormals[i];
+            rail1Path.push(pt.add(binormal.scale(railOffset)));
+            rail2Path.push(pt.subtract(binormal.scale(railOffset)));
+        }
+
+        const railMat = scene.getMaterialByName("railMat") || new BABYLON.StandardMaterial("railMat", scene);
+        railMat.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+
+        const rail1 = BABYLON.MeshBuilder.CreateTube("rail1_" + Math.random(), { path: rail1Path, radius: 0.05, updatable: false }, scene);
+        rail1.material = railMat;
+        const rail2 = BABYLON.MeshBuilder.CreateTube("rail2_" + Math.random(), { path: rail2Path, radius: 0.05, updatable: false }, scene);
+        rail2.material = railMat;
+
+        let distAccum = 0;
+        const tieStep = 1.0;
+        for (let i = 0; i < curve.length - 1; i++) {
+            const dist = BABYLON.Vector3.Distance(curve[i], curve[i + 1]);
+            distAccum += dist;
+            while (distAccum > tieStep) {
+                const inst = tieMesh.createInstance("tie_" + Math.random());
+                inst.position = curve[i].clone();
+                inst.position.y = 0.04;
+                inst.lookAt(curve[i].add(tangents[i]));
+                inst.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.LOCAL);
+                distAccum -= tieStep;
+            }
+        }
+        return { curve, tangents };
+    },
+
     updateTrainTransforms: function (frame) {
         if (!this.trackCurve || this.trackCurve.length === 0) return;
-        const maxFrames = this.trackCurve.length - 1;
-        const tangents = this.trackTangents;
-
-        // Wrap frame to loop
-        frame = frame % (maxFrames + 1);
-        if (frame < 0) frame += (maxFrames + 1);
 
         // Loco
         if (this.locoNode) {
-            this.applyTransformToNode(this.locoNode, frame, tangents, maxFrames);
+            this.applyTransformToNode(this.locoNode, frame);
         }
 
         // Passenger cars
@@ -187,33 +252,32 @@ window.railroadEngine = {
             accumulatedOffset += (previousCarLength / 2) + (currentCarLength / 2);
 
             let carFrame = frame - accumulatedOffset;
-
-            // Wrap around for the loop
-            carFrame = carFrame % (maxFrames + 1);
-            if (carFrame < 0) carFrame += (maxFrames + 1);
-
-            this.applyTransformToNode(this.passengerCars[i], carFrame, tangents, maxFrames);
+            this.applyTransformToNode(this.passengerCars[i], carFrame);
 
             previousCarLength = currentCarLength;
         }
     },
 
-    applyTransformToNode: function (node, frame, tangents, maxFrames) {
-        let f = frame;
-        if (f >= maxFrames + 1) f -= (maxFrames + 1);
-        if (f <= 0) f += (maxFrames + 1);
+    applyTransformToNode: function (node, f) {
+        const data = this.getCurveData(f);
+        const curve = data.curve;
+        const tangents = data.tangents;
+        const p = data.p;
+        const maxFrames = curve.length - 1;
 
-        let currentIdx = Math.floor(f);
+        let currentIdx = Math.floor(p);
         if (currentIdx > maxFrames) currentIdx = maxFrames;
         if (currentIdx < 0) currentIdx = 0;
 
-        let nextIdx = Math.ceil(f);
-        if (nextIdx > maxFrames) nextIdx = 0;
+        let nextIdx = Math.ceil(p);
+        if (nextIdx > maxFrames) {
+            nextIdx = data.isWrapped ? 0 : maxFrames;
+        }
         if (nextIdx < 0) nextIdx = 0;
 
-        const currentPos = this.trackCurve[currentIdx];
-        const nextPos = this.trackCurve[nextIdx] || currentPos;
-        const fraction = f - Math.floor(f);
+        const currentPos = curve[currentIdx];
+        const nextPos = curve[nextIdx] || currentPos;
+        const fraction = p - Math.floor(p);
 
         // Interpolate position
         const interpPos = BABYLON.Vector3.Lerp(currentPos, nextPos, fraction);
@@ -272,20 +336,63 @@ window.railroadEngine = {
         }
     },
 
+    getCurveData: function (f) {
+        let curve = this.trackCurve;
+        let tangents = this.trackTangents;
+        let p = f;
+        let isWrapped = true;
+        let maxTrack = this.trackCurve.length - 1;
+
+        if (this.animState === this.STATE_DEPARTING) {
+            // The bottom straight away is indexes 0 to 40 (length of L=40 with res=40).
+            // We want it to drive straight out starting after the straightaway.
+            if (f > 40) {
+                curve = this.departCurve;
+                tangents = this.departTangents;
+                p = f - 40;
+                isWrapped = false;
+            } else {
+                p = f % (maxTrack + 1);
+                if (p < 0) p += maxTrack + 1;
+            }
+        }
+        else if (this.animState === this.STATE_ARRIVING) {
+            let entryLen = this.entryCurve.length - 1;
+            if (f <= entryLen) {
+                curve = this.entryCurve;
+                tangents = this.entryTangents;
+                p = f;
+                isWrapped = false;
+            } else {
+                curve = this.trackCurve;
+                tangents = this.trackTangents;
+                p = f - entryLen;
+
+                isWrapped = false;
+            }
+        }
+        else {
+            p = f % (maxTrack + 1);
+            if (p < 0) p += maxTrack + 1;
+        }
+
+        return { curve, tangents, p, isWrapped };
+    },
     startAnimation: function () {
         if (!this.locoNode || !this.trackCurve || this.isAnimating) return;
         this.isAnimating = true;
+        this.animState = this.STATE_LOOPING;
 
         let frame = this.startFrame;
         const speed = 0.05; // Adjust speed as necessary
         const maxFrames = this.trackCurve.length - 1;
         const endFrame = this.startFrame + (maxFrames + 1); // One full loop
 
-        const animObserver = this.scene.onBeforeRenderObservable.add(() => {
+        this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
             if (frame >= endFrame) { // Complete a full loop
-                this.scene.onBeforeRenderObservable.remove(animObserver);
+                this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
                 this.isAnimating = false;
-
+                this.animState = this.STATE_IDLE;
                 // Snap back to start perfectly
                 this.updateTrainTransforms(this.startFrame);
                 return;
@@ -294,5 +401,94 @@ window.railroadEngine = {
             this.updateTrainTransforms(frame);
             frame += speed;
         });
+    },
+
+    beginTravel: function (townName) {
+        if (!this.locoNode || !this.trackCurve) return;
+
+        // If it was already moving, hijack it
+        if (this.isAnimating && this.currentAnimObserver) {
+            this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
+        }
+        this.isAnimating = true;
+        this.animState = this.STATE_DEPARTING;
+
+        let frame = this.startFrame;
+        const speed = 0.05;
+        const departEndFrame = 40 + this.departCurve.length + 50;
+
+        this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
+            this.updateTrainTransforms(frame);
+            frame += speed;
+
+            if (frame >= departEndFrame) {
+                this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
+                this.createTransitionScreen(townName, () => {
+                    this.currentTownName = townName;
+                    if (this.townLabelUI) {
+                        this.townLabelUI.text = this.currentTownName;
+                    }
+                    this.beginArrival();
+                });
+            }
+        });
+    },
+
+    beginArrival: function () {
+        const groundMat = this.scene.getMaterialByName("groundMat");
+        if (groundMat) {
+            // Randomize ground to simulate new town biome
+            groundMat.diffuseColor = new BABYLON.Color3(Math.random() * 0.5 + 0.3, Math.random() * 0.5 + 0.3, Math.random() * 0.5 + 0.2);
+        }
+
+        this.animState = this.STATE_ARRIVING;
+        let frame = 0;
+        const entryLen = this.entryCurve.length - 1;
+        const arriveEndFrame = entryLen + this.startFrame; // Stop exactly at start frame
+        const speed = 0.05;
+
+        // Force initial update before animation visually kicks in 
+        this.updateTrainTransforms(0);
+
+        this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
+            this.updateTrainTransforms(frame);
+            frame += speed;
+
+            if (frame >= arriveEndFrame) {
+                this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
+                this.isAnimating = false;
+                this.animState = this.STATE_IDLE;
+                this.updateTrainTransforms(this.startFrame);
+            }
+        });
+    },
+
+    createTransitionScreen: function (townName, onComplete) {
+        let overlay = document.createElement("div");
+        overlay.style.position = "absolute";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.backgroundColor = "black";
+        overlay.style.color = "white";
+        overlay.style.display = "flex";
+        overlay.style.flexDirection = "column";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.zIndex = "999";
+        overlay.style.opacity = "0";
+        overlay.style.transition = "opacity 1s ease";
+        overlay.innerHTML = `<h1 style="font-family: 'Times New Roman', serif; margin-bottom: 20px;">Traveling to ${townName}...</h1>`;
+        document.body.appendChild(overlay);
+
+        setTimeout(() => {
+            overlay.style.opacity = "1";
+            setTimeout(() => {
+                onComplete();
+                overlay.style.opacity = "0";
+                setTimeout(() => { document.body.removeChild(overlay); }, 1000);
+            }, 2500);
+        }, 100);
     }
 };
