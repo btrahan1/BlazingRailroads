@@ -24,6 +24,12 @@
 
     @if (currentState == GameState.InGame)
     {
+        <div style="position: absolute; top: 30px; left: 30px; z-index: 10;">
+            <button @onclick="ToggleOverview" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #8e44ad; color: white; border: 2px solid #732d91; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold; font-family: 'Times New Roman', serif;">
+                📜 Game Overview
+            </button>
+        </div>
+
         <div style="position: absolute; bottom: 30px; left: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 10px; color: white; font-family: 'Times New Roman', serif;">
             <h2 style="margin: 0; font-size: 2rem; color: #f1c40f;">$@funds</h2>
             <h4 style="margin: 0; font-size: 1.2rem; color: #ecf0f1;">Train Capacity: @currentCarCount / @MAX_CARS</h4>
@@ -161,6 +167,42 @@
     }
 </div>
 
+@if (showOverview)
+{
+    <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 200;">
+        <div style="background-color: #f4e8c1; border: 4px solid #8b5a2b; border-radius: 10px; padding: 40px; width: 80%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.8); font-family: 'Times New Roman', serif; color: #3e2723; position: relative;">
+            <button @onclick="ToggleOverview" style="position: absolute; top: 20px; right: 20px; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #8b5a2b; font-weight: bold;">X</button>
+            
+            <h1 style="text-align: center; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">Blazing Railroads: Rules of Expansion</h1>
+            
+            <p><strong>🔥 The Golden Spike:</strong> Start in Maine with $1000. Your ultimate goal is to build a continuous railway network to <em>San Francisco</em>. Achieving this Transcontinental connection rewards a $1,000,000 bonus!</p>
+            <p><strong>🚂 The Consist:</strong> Your locomotive can pull a maximum of 5 cars. You <strong>MUST</strong> have at least one Coal Tender on board to travel to a new town. Fuel is consumed upon arrival!</p>
+
+            <h3 style="margin-top: 30px; border-bottom: 1px dashed #8b5a2b;">Rolling Stock (Capacity: 5)</h3>
+            <ul style="line-height: 1.6;">
+                <li><strong>Coal Tender ($100):</strong> Fuel. Consumed every trip. (Free to buy if in a town with a Coal Mine!)</li>
+                <li><strong>Passenger Car ($Free):</strong> Pays $100 per trip.</li>
+                <li><strong>Freight Boxcar ($100):</strong> Pays $200 per trip.</li>
+                <li><strong>First Class Coach ($Free):</strong> Pays $200 per trip. Max 1 per train. Requires a Hotel in town to build.</li>
+                <li><strong>Oil Tank Car ($100):</strong> Pays $500 per trip. Max 2 per train. Requires an Oil Derrick in town to build. <em>Warning: Will not sell/unload at a town that already has an Oil Derrick!</em></li>
+            </ul>
+
+            <h3 style="margin-top: 30px; border-bottom: 1px dashed #8b5a2b;">Infrastructure & Real Estate</h3>
+            <p>Invest in towns to generate <em>passive income</em> every time your train travels!</p>
+            <ul style="line-height: 1.6;">
+                <li><strong>Hotel ($1000):</strong> Generates $100 per trip. Allow First Class passengers.</li>
+                <li><strong>General Store ($500):</strong> Generates $50 per trip.</li>
+                <li><strong>Saloon ($250):</strong> Generates $75 per trip. Requires a Hotel first.</li>
+                <li><strong>Coal Mine ($2000):</strong> Generates $200 per trip. Provides free Coal Tenders locally.</li>
+                <li><strong>Oil Derrick ($1500):</strong> Generates $0. Unlocks the highly lucrative Oil Tank Cars.</li>
+            </ul>
+            
+            <h3 style="margin-top: 30px; border-bottom: 1px dashed #8b5a2b;">Surveying & Track Building</h3>
+            <p>Open the <strong>Map</strong>. Grey dotted paths represent potential tracks. Click an unconnected town adjacent to your network to lay track ($2500, takes 30s). Build your empire westward!</p>
+        </div>
+    </div>
+}
+
 @code {
     public enum GameState
     {
@@ -171,6 +213,7 @@
     private GameState currentState = GameState.MainMenu;
     private bool hasSaveGame = false;
     private bool isMapVisible = false;
+    private bool showOverview = false;
     private Town currentTown;
     private Town hoveredTown;
     private string errorMessage = "";
@@ -228,23 +271,33 @@
 
     private List<Town> towns = new()
     {
-        new Town { Name = "St. Joseph", Top = "45%", Left = "55%", IsConnected = true },
-        new Town { Name = "Omaha", Top = "42%", Left = "53%", IsConnected = true },
-        new Town { Name = "Cheyenne", Top = "38%", Left = "35%", IsConnected = true },
-        new Town { Name = "Denver", Top = "48%", Left = "33%", IsConnected = true },
-        new Town { Name = "Salt Lake City", Top = "35%", Left = "22%", IsConnected = true },
-        new Town { Name = "Sacramento", Top = "45%", Left = "10%", IsConnected = true },
-        new Town { Name = "San Francisco", Top = "52%", Left = "5%", IsConnected = false },
-        new Town { Name = "Los Angeles", Top = "68%", Left = "12%", IsConnected = false },
+        // East Coast Start
+        new Town { Name = "Maine", Top = "15%", Left = "90%", IsConnected = true },
+        new Town { Name = "New York", Top = "45%", Left = "85%", IsConnected = true },
+        
+        // Mid-West (Unconnected)
+        new Town { Name = "Chicago", Top = "32%", Left = "68%", IsConnected = false },
+        new Town { Name = "St. Louis", Top = "48%", Left = "68%", IsConnected = false },
+        new Town { Name = "Kansas City", Top = "50%", Left = "58%", IsConnected = false },
+        new Town { Name = "Omaha", Top = "42%", Left = "53%", IsConnected = false },
+        new Town { Name = "St. Joseph", Top = "45%", Left = "55%", IsConnected = false },
+        
+        // South/Texas (Unconnected)
+        new Town { Name = "Houston", Top = "85%", Left = "52%", IsConnected = false },
+        new Town { Name = "Dallas", Top = "75%", Left = "50%", IsConnected = false },
+        
+        // Plains/Rockies (Unconnected)
+        new Town { Name = "Dodge City", Top = "58%", Left = "48%", IsConnected = false },
+        new Town { Name = "Denver", Top = "48%", Left = "33%", IsConnected = false },
+        new Town { Name = "Cheyenne", Top = "38%", Left = "35%", IsConnected = false },
+        new Town { Name = "Salt Lake City", Top = "35%", Left = "22%", IsConnected = false },
         new Town { Name = "Santa Fe", Top = "65%", Left = "35%", IsConnected = false },
         new Town { Name = "El Paso", Top = "82%", Left = "38%", IsConnected = false },
-        new Town { Name = "Dodge City", Top = "58%", Left = "48%", IsConnected = false },
-        new Town { Name = "Dallas", Top = "75%", Left = "50%", IsConnected = false },
-        new Town { Name = "Houston", Top = "85%", Left = "52%", IsConnected = false },
-        new Town { Name = "Kansas City", Top = "50%", Left = "58%", IsConnected = false },
-        new Town { Name = "St. Louis", Top = "48%", Left = "68%", IsConnected = false },
-        new Town { Name = "Chicago", Top = "32%", Left = "68%", IsConnected = false },
-        new Town { Name = "New York", Top = "45%", Left = "85%", IsConnected = false }
+
+        // West Coast (Unconnected - The Goal)
+        new Town { Name = "Los Angeles", Top = "68%", Left = "12%", IsConnected = false },
+        new Town { Name = "San Francisco", Top = "52%", Left = "5%", IsConnected = false },
+        new Town { Name = "Sacramento", Top = "45%", Left = "10%", IsConnected = false }
     };
 
     private class Route
@@ -255,37 +308,43 @@
 
     private List<Route> routes = new()
     {
-        // Initial Connected Routes (Spine)
-        new Route { CityA = "Sacramento", CityB = "Salt Lake City" },
-        new Route { CityA = "Salt Lake City", CityB = "Cheyenne" },
-        new Route { CityA = "Cheyenne", CityB = "Denver" },
-        new Route { CityA = "Cheyenne", CityB = "Omaha" },
-        new Route { CityA = "Denver", CityB = "Omaha" },
-        new Route { CityA = "Omaha", CityB = "St. Joseph" },
-
-        // Expansion Routes (West)
-        new Route { CityA = "Sacramento", CityB = "San Francisco" },
-        new Route { CityA = "Sacramento", CityB = "Los Angeles" },
-        new Route { CityA = "Salt Lake City", CityB = "Los Angeles" },
-        new Route { CityA = "Los Angeles", CityB = "Santa Fe" },
-        new Route { CityA = "Denver", CityB = "Santa Fe" },
-        new Route { CityA = "Santa Fe", CityB = "El Paso" },
+        // East Coast Start
+        new Route { CityA = "Maine", CityB = "New York" },
         
-        // Expansion Routes (Midwest/South)
-        new Route { CityA = "El Paso", CityB = "Dallas" },
-        new Route { CityA = "Santa Fe", CityB = "Dodge City" },
-        new Route { CityA = "Denver", CityB = "Dodge City" },
-        new Route { CityA = "Dodge City", CityB = "Dallas" },
-        new Route { CityA = "Dallas", CityB = "Houston" },
-        new Route { CityA = "Dodge City", CityB = "Kansas City" },
-        new Route { CityA = "St. Joseph", CityB = "Kansas City" },
-        
-        // Expansion Routes (East)
-        new Route { CityA = "Kansas City", CityB = "St. Louis" },
+        // East to Midwest
+        new Route { CityA = "New York", CityB = "Chicago" },
+        new Route { CityA = "New York", CityB = "St. Louis" },
+        new Route { CityA = "Chicago", CityB = "Omaha" },
+        new Route { CityA = "St. Louis", CityB = "Kansas City" },
         new Route { CityA = "St. Louis", CityB = "Chicago" },
-        new Route { CityA = "Omaha", CityB = "Chicago" },
-        new Route { CityA = "Chicago", CityB = "New York" },
-        new Route { CityA = "St. Louis", CityB = "New York" }
+
+        // Midwest Hub
+        new Route { CityA = "Omaha", CityB = "St. Joseph" },
+        new Route { CityA = "St. Joseph", CityB = "Kansas City" },
+        new Route { CityA = "Kansas City", CityB = "Dodge City" },
+        new Route { CityA = "Omaha", CityB = "Cheyenne" },
+        new Route { CityA = "Omaha", CityB = "Denver" },
+
+        // Southern Route
+        new Route { CityA = "St. Louis", CityB = "Houston" },
+        new Route { CityA = "Houston", CityB = "Dallas" },
+        new Route { CityA = "Dallas", CityB = "Dodge City" },
+        new Route { CityA = "Dallas", CityB = "El Paso" },
+        new Route { CityA = "El Paso", CityB = "Santa Fe" },
+        new Route { CityA = "Dodge City", CityB = "Santa Fe" },
+        new Route { CityA = "Dodge City", CityB = "Denver" },
+        
+        // Rockies Route
+        new Route { CityA = "Santa Fe", CityB = "Denver" },
+        new Route { CityA = "Denver", CityB = "Cheyenne" },
+        new Route { CityA = "Cheyenne", CityB = "Salt Lake City" },
+        new Route { CityA = "Santa Fe", CityB = "Los Angeles" },
+        
+        // West Coast Spine
+        new Route { CityA = "Salt Lake City", CityB = "Sacramento" },
+        new Route { CityA = "Salt Lake City", CityB = "Los Angeles" },
+        new Route { CityA = "Los Angeles", CityB = "Sacramento" },
+        new Route { CityA = "Sacramento", CityB = "San Francisco" }
     };
 
     public static Action<string, string, float, float, float, float> OnBuildingPlacedAction;
@@ -399,7 +458,15 @@
     private async Task StartNewGame()
     {
         funds = 1000;
-        currentTown = towns.First(t => t.Name == "Sacramento");
+        
+        // Reset connections for a new game
+        foreach(var t in towns)
+        {
+            if (t.Name == "Maine" || t.Name == "New York") t.IsConnected = true;
+            else t.IsConnected = false;
+        }
+
+        currentTown = towns.First(t => t.Name == "Maine");
         townLayouts = new Dictionary<string, List<BuildingData>>();
         currentState = GameState.InGame;
         StateHasChanged();
@@ -483,6 +550,11 @@
         hoveredTown = null;
     }
 
+    private void ToggleOverview()
+    {
+        showOverview = !showOverview;
+    }
+
     private async Task HandleTownClick(Town town)
     {
         if (isBuildingTrack) return;
@@ -563,17 +635,17 @@
     {
         if (gameWon) return; // Already won
 
-        // BFS to find path from New York to San Francisco
-        var nY = towns.FirstOrDefault(t => t.Name == "New York");
+        // BFS to find path from Maine to San Francisco
+        var maine = towns.FirstOrDefault(t => t.Name == "Maine");
         var sF = towns.FirstOrDefault(t => t.Name == "San Francisco");
 
-        if (nY == null || !nY.IsConnected || sF == null || !sF.IsConnected) return;
+        if (maine == null || !maine.IsConnected || sF == null || !sF.IsConnected) return;
 
         var queue = new Queue<string>();
         var visited = new HashSet<string>();
         
-        queue.Enqueue(nY.Name);
-        visited.Add(nY.Name);
+        queue.Enqueue(maine.Name);
+        visited.Add(maine.Name);
 
         while(queue.Count > 0)
         {
