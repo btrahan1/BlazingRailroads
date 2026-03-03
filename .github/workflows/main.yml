@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Publish app
+        run: dotnet publish -c Release -o release
+
+      - name: Fix base href and 404
+        run: |
+          # Change base href to match the repository name
+          sed -i 's/<base href="\/" \/>/<base href="\/BlazingRailroads\/" \/>/g' release/wwwroot/index.html
+          # Copy index.html to 404.html to handle SPA routing
+          cp release/wwwroot/index.html release/wwwroot/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: release/wwwroot
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
