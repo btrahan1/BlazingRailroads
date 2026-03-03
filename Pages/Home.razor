@@ -50,6 +50,18 @@
         <button @onclick="BuildHotel" disabled="@(funds < COST_HOTEL)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f1c40f; color: #2c3e50; border: 2px solid #f39c12; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
             🏗️ Build Hotel ($@COST_HOTEL)
         </button>
+        <button @onclick="BuildGeneralStore" disabled="@(funds < COST_GENERAL_STORE)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #1abc9c; color: white; border: 2px solid #16a085; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            🏪 Build General Store ($@COST_GENERAL_STORE)
+        </button>
+        <button @onclick="BuildSaloon" disabled="@(funds < COST_SALOON)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #d35400; color: white; border: 2px solid #e67e22; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            🍺 Build Saloon ($@COST_SALOON)
+        </button>
+        <button @onclick="BuildCoalMine" disabled="@(funds < COST_COAL_MINE)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #34495e; color: white; border: 2px solid #2c3e50; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            ⛏️ Build Coal Mine ($@COST_COAL_MINE)
+        </button>
+        <button @onclick="BuildOilDerrick" disabled="@(funds < COST_OIL_DERRICK)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #000000; color: white; border: 2px solid #333333; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
+            🛢️ Build Oil Derrick ($@COST_OIL_DERRICK)
+        </button>
         <span style="color: white; font-family: 'Times New Roman', serif; text-shadow: 1px 1px 2px black; font-size: 0.9rem; text-align: center;">
             (Press 'R' to Rotate, 'ESC' to Cancel)
         </span>
@@ -59,17 +71,20 @@
         <button @onclick="ToggleMap" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f39c12; color: #fff; border: 2px solid #e67e22; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
             🗺️ Open Travel Map
         </button>
-        <button @onclick="AddCoalTender" disabled="@(funds < COST_COAL || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #8e44ad; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-            + Add Coal Tender ($@COST_COAL)
+        <button @onclick="AddCoalTender" disabled="@(funds < GetCoalCost() || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #8e44ad; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add Coal Tender ($@GetCoalCost())
         </button>
         <button @onclick="AddPassengerCar" disabled="@(funds < COST_PASSENGER || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #27ae60; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             + Add Passenger Car ($@COST_PASSENGER)
         </button>
-        <button @onclick="AddOilTankCar" disabled="@(funds < COST_OIL || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+        <button @onclick="AddOilTankCar" disabled="@(funds < COST_OIL || currentCarCount >= MAX_CARS || !HasOilDerrickInCurrentTown() || currentOilCarCount >= 2)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #2980b9; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             + Add Oil Tank Car ($@COST_OIL)
         </button>
         <button @onclick="AddFreightBoxcar" disabled="@(funds < COST_FREIGHT || currentCarCount >= MAX_CARS)" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #d35400; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             + Add Freight Boxcar ($@COST_FREIGHT)
+        </button>
+        <button @onclick="AddFirstClassCar" disabled="@(funds < COST_FIRST_CLASS || currentCarCount >= MAX_CARS || hasFirstClassCar || !HasHotelInCurrentTown())" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #9b59b6; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            + Add First Class Coach ($@COST_FIRST_CLASS)
         </button>
         <button @onclick="RemoveSelectedCar" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #c0392b; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             - Remove Selected Car
@@ -86,8 +101,21 @@
                 <button class="close-map-btn" @onclick="ToggleMap">X</button>
                 @foreach (var town in towns)
                 {
-                    <div class="town-node @(town == currentTown ? "current" : "")" style="top: @town.Top; left: @town.Left;" @onclick="() => TravelToTown(town)">
+                    <div class="town-node @(town == currentTown ? "current" : "")" 
+                         style="top: @town.Top; left: @town.Left; position: absolute;" 
+                         @onclick="() => TravelToTown(town)"
+                         @onmouseover="() => ShowTownTooltip(town)"
+                         @onmouseout="HideTownTooltip">
+                        
                         <span class="town-label">@town.Name</span>
+                        
+                        @if (hoveredTown?.Name == town.Name)
+                        {
+                            <div style="position: absolute; top: -100%; left: 50%; transform: translate(-50%, -10px); background-color: rgba(0, 0, 0, 0.9); color: white; padding: 15px; border-radius: 8px; border: 2px solid #f39c12; white-space: nowrap; z-index: 100; font-family: 'Courier New', Courier, monospace; pointer-events: none; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                                <strong style="color: #f39c12; font-size: 1.1rem; border-bottom: 1px solid #f39c12; padding-bottom: 5px; margin-bottom: 5px; display: block;">@town.Name Buildings</strong>
+                                @GetTownBuildingsSummary(town.Name)
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -107,12 +135,15 @@
     private bool hasSaveGame = false;
     private bool isMapVisible = false;
     private Town currentTown;
+    private Town hoveredTown;
     private string errorMessage = "";
     private string arrivalMessage = "";
     
     // Economy
     private int funds = 1000;
     private int currentCarCount = 0;
+    private int currentOilCarCount = 0;
+    private bool hasFirstClassCar = false;
     private const int MAX_CARS = 5;
 
     public class BuildingData
@@ -138,8 +169,13 @@
     private const int COST_COAL = 100;
     private const int COST_PASSENGER = 0;
     private const int COST_FREIGHT = 100;
-    private const int COST_OIL = 200;
+    private const int COST_OIL = 100;
+    private const int COST_FIRST_CLASS = 0;
     private const int COST_HOTEL = 1000;
+    private const int COST_GENERAL_STORE = 500;
+    private const int COST_SALOON = 250;
+    private const int COST_COAL_MINE = 2000;
+    private const int COST_OIL_DERRICK = 1500;
 
     private class Town
     {
@@ -159,6 +195,7 @@
     };
 
     public static Action<string, string, float, float, float, float> OnBuildingPlacedAction;
+    public static Action<string, float, float, float> OnBuildingRemovedAction;
 
     [JSInvokable]
     public static void OnBuildingPlaced(string town, string type, float x, float y, float z, float rotY)
@@ -166,17 +203,54 @@
         OnBuildingPlacedAction?.Invoke(town, type, x, y, z, rotY);
     }
 
+    [JSInvokable]
+    public static void OnBuildingRemoved(string town, float x, float y, float z)
+    {
+        OnBuildingRemovedAction?.Invoke(town, x, y, z);
+    }
+
     protected override void OnInitialized()
     {
         currentTown = towns.First(t => t.Name == "Sacramento");
         OnBuildingPlacedAction = HandleBuildingPlaced;
+        OnBuildingRemovedAction = HandleBuildingRemoved;
+    }
+
+    private bool HasHotelInCurrentTown()
+    {
+        if (currentTown == null) return false;
+        return townLayouts.ContainsKey(currentTown.Name) && townLayouts[currentTown.Name].Any(b => b.Type == "hotel");
+    }
+
+    private bool HasCoalMineInCurrentTown()
+    {
+        if (currentTown == null) return false;
+        return townLayouts.ContainsKey(currentTown.Name) && townLayouts[currentTown.Name].Any(b => b.Type == "coal_mine");
+    }
+
+    private bool HasOilDerrickInCurrentTown()
+    {
+        if (currentTown == null) return false;
+        return townLayouts.ContainsKey(currentTown.Name) && townLayouts[currentTown.Name].Any(b => b.Type == "oil_derrick");
+    }
+
+    private int GetCoalCost()
+    {
+        return HasCoalMineInCurrentTown() ? 0 : COST_COAL;
     }
 
     private void HandleBuildingPlaced(string town, string type, float x, float y, float z, float rotY)
     {
-        if (funds >= COST_HOTEL && type == "hotel")
+        int cost = 0;
+        if (type == "hotel") cost = COST_HOTEL;
+        else if (type == "general_store") cost = COST_GENERAL_STORE;
+        else if (type == "saloon") cost = COST_SALOON;
+        else if (type == "coal_mine") cost = COST_COAL_MINE;
+        else if (type == "oil_derrick") cost = COST_OIL_DERRICK;
+
+        if (funds >= cost)
         {
-            funds -= COST_HOTEL;
+            funds -= cost;
 
             if (!townLayouts.ContainsKey(town))
                 townLayouts[town] = new List<BuildingData>();
@@ -188,6 +262,30 @@
                 await SaveGameAsync();
                 StateHasChanged();
             });
+        }
+    }
+
+    private void HandleBuildingRemoved(string town, float x, float y, float z)
+    {
+        if (townLayouts.ContainsKey(town))
+        {
+            var list = townLayouts[town];
+            var toRemove = list.OrderBy(b => Math.Abs(b.X - x) + Math.Abs(b.Y - y) + Math.Abs(b.Z - z)).FirstOrDefault();
+            if (toRemove != null && (Math.Abs(toRemove.X - x) < 0.1f)) // sanity check
+            {
+                list.Remove(toRemove);
+                if (toRemove.Type == "hotel") funds += COST_HOTEL;
+                else if (toRemove.Type == "general_store") funds += COST_GENERAL_STORE;
+                else if (toRemove.Type == "saloon") funds += COST_SALOON;
+                else if (toRemove.Type == "coal_mine") funds += COST_COAL_MINE;
+                else if (toRemove.Type == "oil_derrick") funds += COST_OIL_DERRICK;
+
+                _ = InvokeAsync(async () =>
+                {
+                    await SaveGameAsync();
+                    StateHasChanged();
+                });
+            }
         }
     }
 
@@ -278,6 +376,42 @@
     {
         isMapVisible = !isMapVisible;
         errorMessage = ""; // Clear errors when interacting with UI
+        hoveredTown = null;
+    }
+
+    private void ShowTownTooltip(Town t)
+    {
+        hoveredTown = t;
+    }
+
+    private void HideTownTooltip()
+    {
+        hoveredTown = null;
+    }
+
+    private MarkupString GetTownBuildingsSummary(string townName)
+    {
+        if (!townLayouts.ContainsKey(townName) || townLayouts[townName].Count == 0)
+        {
+            return (MarkupString)"No buildings built yet.";
+        }
+
+        var buildings = townLayouts[townName];
+        var summary = new List<string>();
+
+        int hotels = buildings.Count(b => b.Type == "hotel");
+        int stores = buildings.Count(b => b.Type == "general_store");
+        int saloons = buildings.Count(b => b.Type == "saloon");
+        int mines = buildings.Count(b => b.Type == "coal_mine");
+        int derricks = buildings.Count(b => b.Type == "oil_derrick");
+
+        if (hotels > 0) summary.Add($"{hotels} Hotel{(hotels > 1 ? "s" : "")}");
+        if (stores > 0) summary.Add($"{stores} General Store{(stores > 1 ? "s" : "")}");
+        if (saloons > 0) summary.Add($"{saloons} Saloon{(saloons > 1 ? "s" : "")}");
+        if (mines > 0) summary.Add($"{mines} Coal Mine{(mines > 1 ? "s" : "")}");
+        if (derricks > 0) summary.Add($"{derricks} Oil Derrick{(derricks > 1 ? "s" : "")}");
+
+        return (MarkupString)string.Join("<br/>", summary); 
     }
 
     private async Task TravelToTown(Town destination)
@@ -302,46 +436,53 @@
         
         errorMessage = "";
         isMapVisible = false;
-        currentTown = destination;
+        StateHasChanged(); // Hide map
+
+        // Wait for the train to leave town. JS will resolve the promise while the screen is black.
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.beginTravel", destination.Name);
-        await SaveGameAsync();
-        StateHasChanged();
+        
+        // Now safely arrived at destination
+        currentTown = destination;
 
         // Calculate Passive Income upon arrival
-        _ = Task.Run(async () =>
+        int globalHotels = 0;
+        int globalStores = 0;
+        int globalSaloons = 0;
+        int globalCoalMines = 0;
+        foreach (var townLayout in townLayouts.Values)
         {
-            // Wait for transition to complete
-            await Task.Delay(2500);
+            globalHotels += townLayout.Count(b => b.Type == "hotel");
+            globalStores += townLayout.Count(b => b.Type == "general_store");
+            globalSaloons += townLayout.Count(b => b.Type == "saloon");
+            globalCoalMines += townLayout.Count(b => b.Type == "coal_mine");
+        }
+
+        int passiveIncome = (globalHotels * 100) + (globalStores * 50) + (globalSaloons * 750) + (globalCoalMines * 200);
+        if (passiveIncome > 0)
+        {
+            funds += passiveIncome;
+            arrivalMessage = $"Funds received: ${passiveIncome} from business adventures!";
             
-            int globalHotels = 0;
-            foreach (var townLayout in townLayouts.Values)
+            _ = Task.Run(async () =>
             {
-                globalHotels += townLayout.Count(b => b.Type == "hotel");
-            }
-
-            if (globalHotels > 0)
-            {
-                int passiveIncome = globalHotels * 100;
-                funds += passiveIncome;
-                arrivalMessage = $"Funds received: ${passiveIncome} from business adventures!";
-                await SaveGameAsync();
-                await InvokeAsync(StateHasChanged);
-
                 await Task.Delay(4000);
                 arrivalMessage = "";
                 await InvokeAsync(StateHasChanged);
-            }
+            });
+        }
 
-            // Load new town buildings
-            if (townLayouts.ContainsKey(destination.Name))
-            {
-                await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", townLayouts[destination.Name]);
-            }
-            else
-            {
-                await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", new List<BuildingData>());
-            }
-        });
+        await SaveGameAsync();
+        StateHasChanged();
+
+        // Load new town buildings while screen is transitioning
+        if (townLayouts.ContainsKey(destination.Name))
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", townLayouts[destination.Name]);
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.loadTownBuildings", new List<BuildingData>());
+        }
     }
 
     private async Task BuildHotel()
@@ -349,6 +490,52 @@
         if (funds >= COST_HOTEL)
         {
             await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "hotel");
+        }
+    }
+
+    private async Task BuildGeneralStore()
+    {
+        if (funds >= COST_GENERAL_STORE)
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "general_store");
+        }
+    }
+
+    private async Task BuildSaloon()
+    {
+        if (!HasHotelInCurrentTown())
+        {
+            errorMessage = "You must build a Hotel in this town first!";
+            StateHasChanged();
+            
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(3000);
+                errorMessage = "";
+                await InvokeAsync(StateHasChanged);
+            });
+            return;
+        }
+
+        if (funds >= COST_SALOON)
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "saloon");
+        }
+    }
+
+    private async Task BuildCoalMine()
+    {
+        if (funds >= COST_COAL_MINE)
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "coal_mine");
+        }
+    }
+
+    private async Task BuildOilDerrick()
+    {
+        if (funds >= COST_OIL_DERRICK)
+        {
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.startPlacementMode", "oil_derrick");
         }
     }
 
@@ -365,9 +552,10 @@
 
     private async Task AddCoalTender()
     {
-        if (funds >= COST_COAL && currentCarCount < MAX_CARS)
+        int cost = GetCoalCost();
+        if (funds >= cost && currentCarCount < MAX_CARS)
         {
-            funds -= COST_COAL;
+            funds -= cost;
             await JSRuntime.InvokeVoidAsync("window.railroadEngine.addCoalTender");
             await UpdateCarCount();
             await SaveGameAsync();
@@ -396,6 +584,17 @@
         }
     }
 
+    private async Task AddFirstClassCar()
+    {
+        if (funds >= COST_FIRST_CLASS && currentCarCount < MAX_CARS && !hasFirstClassCar && HasHotelInCurrentTown())
+        {
+            funds -= COST_FIRST_CLASS;
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.addFirstClassCar");
+            await UpdateCarCount();
+            await SaveGameAsync();
+        }
+    }
+
     private async Task RemoveSelectedCar()
     {
         await JSRuntime.InvokeVoidAsync("window.railroadEngine.removeSelectedCar");
@@ -407,12 +606,15 @@
     {
         // Simple JS eval to count active passengerCars array minus Caboose
         currentCarCount = await JSRuntime.InvokeAsync<int>("eval", "window.railroadEngine.passengerCars.filter(c => !c.isCaboose).length");
+        hasFirstClassCar = await JSRuntime.InvokeAsync<bool>("window.railroadEngine.hasFirstClassCar");
+        currentOilCarCount = await JSRuntime.InvokeAsync<int>("eval", "window.railroadEngine.passengerCars.filter(c => c.carType === 'oil').length");
         StateHasChanged();
     }
 
     private async Task UnloadTrain()
     {
-        var revenues = await JSRuntime.InvokeAsync<List<CarRevenue>>("window.railroadEngine.getRevenueCars");
+        bool townHasOil = HasOilDerrickInCurrentTown();
+        var revenues = await JSRuntime.InvokeAsync<List<CarRevenue>>("window.railroadEngine.getRevenueCars", townHasOil);
         int totalPayout = 0;
         foreach (var car in revenues)
         {
@@ -423,7 +625,7 @@
         if (totalPayout > 0 || currentCarCount > 0)
         {
             funds += totalPayout;
-            await JSRuntime.InvokeVoidAsync("window.railroadEngine.unloadCars");
+            await JSRuntime.InvokeVoidAsync("window.railroadEngine.unloadCars", townHasOil);
             await UpdateCarCount();
             await SaveGameAsync();
             errorMessage = ""; // clear possible coal warnings

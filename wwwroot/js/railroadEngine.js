@@ -81,6 +81,12 @@ window.railroadEngine = {
             }
 
             if (pickResult.hit && pickResult.pickedMesh) {
+                let buildingNode = this.buildingMeshes.find(b => pickResult.pickedMesh.isDescendantOf(b) || pickResult.pickedMesh === b);
+                if (buildingNode) {
+                    this.pickupBuilding(buildingNode);
+                    return;
+                }
+
                 let node = pickResult.pickedMesh.parent;
                 if (node && this.passengerCars.includes(node)) {
                     this.selectCar(node);
@@ -357,7 +363,7 @@ window.railroadEngine = {
         if (newCar) {
             newCar.carLengthFrames = 3.5;
             newCar.carType = "oil";
-            newCar.revenue = 400;
+            newCar.revenue = 500;
             this.attachCar(newCar);
         }
     },
@@ -369,6 +375,17 @@ window.railroadEngine = {
             newCar.carLengthFrames = 3.5;
             newCar.carType = "freight";
             newCar.revenue = 200;
+            this.attachCar(newCar);
+        }
+    },
+
+    addFirstClassCar: async function () {
+        console.log("Adding first class coach...");
+        const newCar = await window.railroadAssets.spawnObject("first_class_coach", new BABYLON.Vector3(0, 0, 0));
+        if (newCar) {
+            newCar.carLengthFrames = 3.5;
+            newCar.carType = "first_class";
+            newCar.revenue = 200; // 20 passengers @ $10
             this.attachCar(newCar);
         }
     },
@@ -408,11 +425,14 @@ window.railroadEngine = {
         }
     },
 
-    getRevenueCars: function () {
+    getRevenueCars: function (hasOilWellInTown) {
         // Return an array of revenue data for Blazor to sum up
         let revenues = [];
         for (let i = 0; i < this.passengerCars.length; i++) {
             let car = this.passengerCars[i];
+            if (car.carType === "oil" && hasOilWellInTown) {
+                continue; // Can't sell oil to a town with an oil well!
+            }
             if (car.revenue > 0) {
                 revenues.push({ type: car.carType, payout: car.revenue });
             }
@@ -436,10 +456,21 @@ window.railroadEngine = {
         return false;
     },
 
-    unloadCars: function () {
+    hasFirstClassCar: function () {
+        for (let i = 0; i < this.passengerCars.length; i++) {
+            if (this.passengerCars[i].carType === "first_class") return true;
+        }
+        return false;
+    },
+
+    unloadCars: function (hasOilWellInTown) {
         // Loop backwards and delete all revenue-generating cars AND coal tenders
         for (let i = this.passengerCars.length - 1; i >= 0; i--) {
             let car = this.passengerCars[i];
+            if (car.carType === "oil" && hasOilWellInTown) {
+                continue; // Do not unload oil cars if the town produces oil
+            }
+
             if ((car.revenue && car.revenue > 0) || car.carType === "tender") {
                 car.dispose();
                 this.passengerCars.splice(i, 1);
@@ -475,10 +506,13 @@ window.railroadEngine = {
                 if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "passenger"; newCar.revenue = 100; }
             } else if (type === "oil") {
                 newCar = await window.railroadAssets.spawnObject("oil_tank_car", new BABYLON.Vector3(0, 0, 0));
-                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "oil"; newCar.revenue = 400; }
+                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "oil"; newCar.revenue = 500; }
             } else if (type === "freight") {
                 newCar = await window.railroadAssets.spawnObject("freight_boxcar", new BABYLON.Vector3(0, 0, 0));
                 if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "freight"; newCar.revenue = 200; }
+            } else if (type === "first_class") {
+                newCar = await window.railroadAssets.spawnObject("first_class_coach", new BABYLON.Vector3(0, 0, 0));
+                if (newCar) { newCar.carLengthFrames = 3.5; newCar.carType = "first_class"; newCar.revenue = 200; }
             }
 
             if (newCar) {
@@ -561,7 +595,7 @@ window.railroadEngine = {
     },
 
     beginTravel: function (townName) {
-        if (!this.locoNode || !this.trackCurve) return;
+        if (!this.locoNode || !this.trackCurve) return Promise.resolve();
 
         // If it was already moving, hijack it
         if (this.isAnimating && this.currentAnimObserver) {
@@ -575,20 +609,23 @@ window.railroadEngine = {
         // Trigger the transition BEFORE we run out of new geometry so the train doesn't park before cutting!
         const departEndFrame = this.straightRes + 50;
 
-        this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
-            this.updateTrainTransforms(frame);
-            frame += speed;
+        return new Promise((resolve) => {
+            this.currentAnimObserver = this.scene.onBeforeRenderObservable.add(() => {
+                this.updateTrainTransforms(frame);
+                frame += speed;
 
-            if (frame >= departEndFrame) {
-                this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
-                this.createTransitionScreen(townName, () => {
-                    this.currentTownName = townName;
-                    if (this.townLabelUI) {
-                        this.townLabelUI.text = this.currentTownName;
-                    }
-                    this.beginArrival();
-                });
-            }
+                if (frame >= departEndFrame) {
+                    this.scene.onBeforeRenderObservable.remove(this.currentAnimObserver);
+                    this.createTransitionScreen(townName, () => {
+                        this.currentTownName = townName;
+                        if (this.townLabelUI) {
+                            this.townLabelUI.text = this.currentTownName;
+                        }
+                        resolve(); // Signal Blazor that we are transitioning
+                        this.beginArrival();
+                    });
+                }
+            });
         });
     },
 
@@ -663,6 +700,14 @@ window.railroadEngine = {
         // Spawn a ghost version of the building
         if (buildingType === "hotel") {
             this.placementMesh = await window.railroadAssets.spawnObject("hotel", new BABYLON.Vector3(0, 0, 0));
+        } else if (buildingType === "general_store") {
+            this.placementMesh = await window.railroadAssets.spawnObject("general_store", new BABYLON.Vector3(0, 0, 0));
+        } else if (buildingType === "saloon") {
+            this.placementMesh = await window.railroadAssets.spawnObject("saloon", new BABYLON.Vector3(0, 0, 0));
+        } else if (buildingType === "coal_mine") {
+            this.placementMesh = await window.railroadAssets.spawnObject("coal_mine", new BABYLON.Vector3(0, 0, 0));
+        } else if (buildingType === "oil_derrick") {
+            this.placementMesh = await window.railroadAssets.spawnObject("oil_derrick", new BABYLON.Vector3(0, 0, 0));
         }
 
         if (this.placementMesh) {
@@ -723,6 +768,32 @@ window.railroadEngine = {
         this.placementType = null;
     },
 
+    pickupBuilding: function (node) {
+        if (this.placementMesh) return;
+
+        console.log("Picking up building: " + node.buildingType);
+
+        const idx = this.buildingMeshes.indexOf(node);
+        if (idx > -1) {
+            this.buildingMeshes.splice(idx, 1);
+        }
+
+        DotNet.invokeMethodAsync('BlazingRailroads', 'OnBuildingRemoved',
+            this.currentTownName,
+            node.position.x,
+            node.position.y,
+            node.position.z
+        ).catch(err => console.error("Blazor Interop failed on building remove:", err));
+
+        this.placementMesh = node;
+        this.placementType = node.buildingType;
+
+        this.placementMesh.getChildMeshes().forEach(m => {
+            m.visibility = 0.5;
+            m.isPickable = false;
+        });
+    },
+
     loadTownBuildings: async function (buildingsArray) {
         // Clear existing buildings
         for (let b of this.buildingMeshes) {
@@ -737,6 +808,14 @@ window.railroadEngine = {
             let newBuilding = null;
             if (data.type === "hotel") {
                 newBuilding = await window.railroadAssets.spawnObject("hotel", new BABYLON.Vector3(data.x, data.y, data.z));
+            } else if (data.type === "general_store") {
+                newBuilding = await window.railroadAssets.spawnObject("general_store", new BABYLON.Vector3(data.x, data.y, data.z));
+            } else if (data.type === "saloon") {
+                newBuilding = await window.railroadAssets.spawnObject("saloon", new BABYLON.Vector3(data.x, data.y, data.z));
+            } else if (data.type === "coal_mine") {
+                newBuilding = await window.railroadAssets.spawnObject("coal_mine", new BABYLON.Vector3(data.x, data.y, data.z));
+            } else if (data.type === "oil_derrick") {
+                newBuilding = await window.railroadAssets.spawnObject("oil_derrick", new BABYLON.Vector3(data.x, data.y, data.z));
             }
 
             if (newBuilding) {

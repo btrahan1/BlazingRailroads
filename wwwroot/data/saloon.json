@@ -1,0 +1,231 @@
+{
+  "Name": "Old_West_Saloon",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "saloon_base_foundation",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.1, -2.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [8.5, 0.2, 7.5],
+      "ColorHex": "#4A3728",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "main_structure",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.5, -3.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [6.0, 5.0, 6.0],
+      "ColorHex": "#8B4513",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "false_front_facade",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 6.0, -0.6],
+      "Rotation": [0, 0, 0],
+      "Scale": [6.5, 2.5, 0.2],
+      "ColorHex": "#A0522D",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "saloon_sign_board",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 6.2, -0.4],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.0, 0.8, 0.1],
+      "ColorHex": "#F5DEB3",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_floor",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.4, -0.2],
+      "Rotation": [0, 0, 0],
+      "Scale": [7.5, 0.4, 2.5],
+      "ColorHex": "#5D4037",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_roof",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 4.2, -0.5],
+      "Rotation": [10, 0, 0],
+      "Scale": [7.0, 0.2, 3.0],
+      "ColorHex": "#3E2723",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_post_left",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [3.2, 2.2, 0.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 4.0, 0.2],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "porch_post_right",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-3.2, 2.2, 0.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.2, 4.0, 0.2],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "doorway_cutout",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 1.8, -0.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.8, 2.5, 0.5],
+      "ColorHex": "#000000",
+      "Material": "Plastic",
+      "Operation": "Subtract"
+    },
+    {
+      "Id": "batwing_door_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0.45, 1.7, -0.5],
+      "Rotation": [0, 30, 0],
+      "Scale": [0.8, 1.2, 0.05],
+      "ColorHex": "#D2B48C",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "batwing_door_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-0.45, 1.7, -0.5],
+      "Rotation": [0, -30, 0],
+      "Scale": [0.8, 1.2, 0.05],
+      "ColorHex": "#D2B48C",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_left_lower",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.0, 2.0, -0.55],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 1.8, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_right_lower",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-2.0, 2.0, -0.55],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 1.8, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_upper_1",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [1.5, 4.8, -0.55],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.0, 1.2, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "window_upper_2",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-1.5, 4.8, -0.55],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.0, 1.2, 0.1],
+      "ColorHex": "#ADD8E6",
+      "Material": "Glass",
+      "Operation": "Union"
+    },
+    {
+      "Id": "chimney_brick",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.2, 5.5, -4.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.8, 2.5, 0.8],
+      "ColorHex": "#5D4037",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "hitching_post_rail",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 0.8, 1.5],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.1, 6.0, 0.1],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "hitching_post_leg_1",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [2.5, 0.4, 1.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.15, 0.8, 0.15],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "hitching_post_leg_2",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-2.5, 0.4, 1.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.15, 0.8, 0.15],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "batwing_door_left",
+      "Value": [0, 30, 0],
+      "Duration": 1.0
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "batwing_door_right",
+      "Value": [0, -30, 0],
+      "Duration": 1.0
+    }
+  ]
+}

@@ -39,6 +39,31 @@
             "id": "freight_boxcar",
             "name": "1880 Freight Boxcar",
             "recipe": "data/freight_boxcar.json"
+        },
+        {
+            "id": "first_class_coach",
+            "name": "1880 First Class Coach",
+            "recipe": "data/first_class_coach.json"
+        },
+        {
+            "id": "general_store",
+            "name": "General Store",
+            "recipe": "data/general_store.json"
+        },
+        {
+            "id": "saloon",
+            "name": "Old West Saloon",
+            "recipe": "data/saloon.json"
+        },
+        {
+            "id": "coal_mine",
+            "name": "Coal Mine",
+            "recipe": "data/coal_mine.json"
+        },
+        {
+            "id": "oil_derrick",
+            "name": "Oil Derrick",
+            "recipe": "data/oil_derrick.json"
         }
     ]
 }

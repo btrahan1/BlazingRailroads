@@ -1,0 +1,183 @@
+{
+  "Name": "1800s_Oil_Derrick",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "well_foundation",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.1, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [10.0, 0.2, 10.0],
+      "ColorHex": "#3E2F21",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "derrick_leg_fl",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.0, 5.0, 2.0],
+      "Rotation": [10, 0, -10],
+      "Scale": [0.2, 10.0, 0.2],
+      "ColorHex": "#4E342E",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "derrick_leg_fr",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-2.0, 5.0, 2.0],
+      "Rotation": [10, 0, 10],
+      "Scale": [0.2, 10.0, 0.2],
+      "ColorHex": "#4E342E",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "derrick_leg_bl",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [2.0, 5.0, -2.0],
+      "Rotation": [-10, 0, -10],
+      "Scale": [0.2, 10.0, 0.2],
+      "ColorHex": "#4E342E",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "derrick_leg_br",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-2.0, 5.0, -2.0],
+      "Rotation": [-10, 0, 10],
+      "Scale": [0.2, 10.0, 0.2],
+      "ColorHex": "#4E342E",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "derrick_top_platform",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 10.0, 0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 0.2, 1.2],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "sampson_post",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.0, 4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.6, 4.0, 0.6],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "walking_beam",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 4.0, 4.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.4, 0.6, 6.0],
+      "ColorHex": "#2F2F2F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "well_head_pipe",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 1.0, 7.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.4, 2.0, 0.4],
+      "ColorHex": "#1A1A1A",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "pitman_arm",
+      "ParentId": "walking_beam",
+      "Shape": "Cylinder",
+      "Position": [0, -1.5, -2.8],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 3.0, 0.1],
+      "ColorHex": "#708090",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "crank_wheel",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [0, 1.0, 1.2],
+      "Rotation": [0, 0, 90],
+      "Scale": [2.0, 0.3, 2.0],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "storage_tank",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-5.0, 1.5, -3.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.0, 3.0, 4.0],
+      "ColorHex": "#2F4F4F",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "tank_hose",
+      "ParentId": null,
+      "Shape": "Cylinder",
+      "Position": [-2.5, 0.3, 2.0],
+      "Rotation": [0, 45, 90],
+      "Scale": [0.15, 6.0, 0.15],
+      "ColorHex": "#0A0A0A",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "oil_puddle",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [0, 0.1, 7.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.0, 0.05, 2.0],
+      "ColorHex": "#000000",
+      "Material": "Glow",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "walking_beam",
+      "Value": [15, 0, 0],
+      "Duration": 1.5
+    },
+    {
+      "Time": 1.5,
+      "Action": "Rotate",
+      "TargetId": "walking_beam",
+      "Value": [-15, 0, 0],
+      "Duration": 1.5
+    },
+    {
+      "Time": 0.0,
+      "Action": "Rotate",
+      "TargetId": "crank_wheel",
+      "Value": [0, 360, 0],
+      "Duration": 3.0
+    }
+  ]
+}

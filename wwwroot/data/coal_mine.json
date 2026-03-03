@@ -1,0 +1,209 @@
+{
+  "Name": "Coal_Mine_Entrance",
+  "Type": "Procedural",
+  "Parts": [
+    {
+      "Id": "hill_mass",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 4.0, -8.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [15.0, 8.0, 10.0],
+      "ColorHex": "#3E2F21",
+      "Material": "Rubber",
+      "Operation": "Union"
+    },
+    {
+      "Id": "tunnel_bore",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 2.0, -7.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [3.5, 4.0, 12.0],
+      "ColorHex": "#000000",
+      "Material": "Plastic",
+      "Operation": "Subtract"
+    },
+    {
+      "Id": "timber_frame_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [1.8, 2.0, -1.1],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.4, 4.0, 0.4],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "timber_frame_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-1.8, 2.0, -1.1],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.4, 4.0, 0.4],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "timber_frame_top",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 4.1, -1.1],
+      "Rotation": [0, 0, 0],
+      "Scale": [4.2, 0.4, 0.5],
+      "ColorHex": "#5D4037",
+      "Material": "Leather",
+      "Operation": "Union"
+    },
+    {
+      "Id": "rail_left",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0.6, 0.1, -2.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 0.1, 12.0],
+      "ColorHex": "#708090",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "rail_right",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [-0.6, 0.1, -2.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [0.1, 0.1, 12.0],
+      "ColorHex": "#708090",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cart_base",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.6, 1.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.4, 0.8, 1.8],
+      "ColorHex": "#3E2723",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "cart_hollow",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 0.8, 1.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [1.2, 0.7, 1.6],
+      "ColorHex": "#1A1A1A",
+      "Material": "Plastic",
+      "Operation": "Subtract"
+    },
+    {
+      "Id": "coal_lump_1",
+      "ParentId": "cart_base",
+      "Shape": "Sphere",
+      "Position": [0.2, 0.4, 0.2],
+      "Rotation": [45, 10, 0],
+      "Scale": [0.6, 0.5, 0.6],
+      "ColorHex": "#121212",
+      "Material": "Glow",
+      "Operation": "Union"
+    },
+    {
+      "Id": "coal_lump_2",
+      "ParentId": "cart_base",
+      "Shape": "Sphere",
+      "Position": [-0.2, 0.4, -0.3],
+      "Rotation": [0, 30, 15],
+      "Scale": [0.7, 0.6, 0.7],
+      "ColorHex": "#1A1A1A",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_fl",
+      "ParentId": "cart_base",
+      "Shape": "Cylinder",
+      "Position": [0.6, -0.4, 0.5],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.4, 0.1, 0.4],
+      "ColorHex": "#212121",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_fr",
+      "ParentId": "cart_base",
+      "Shape": "Cylinder",
+      "Position": [-0.6, -0.4, 0.5],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.4, 0.1, 0.4],
+      "ColorHex": "#212121",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_bl",
+      "ParentId": "cart_base",
+      "Shape": "Cylinder",
+      "Position": [0.6, -0.4, -0.5],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.4, 0.1, 0.4],
+      "ColorHex": "#212121",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "wheel_br",
+      "ParentId": "cart_base",
+      "Shape": "Cylinder",
+      "Position": [-0.6, -0.4, -0.5],
+      "Rotation": [0, 0, 90],
+      "Scale": [0.4, 0.1, 0.4],
+      "ColorHex": "#212121",
+      "Material": "Metal",
+      "Operation": "Union"
+    },
+    {
+      "Id": "mine_sign",
+      "ParentId": null,
+      "Shape": "Box",
+      "Position": [0, 4.8, -1.0],
+      "Rotation": [-5, 0, 0],
+      "Scale": [2.5, 0.6, 0.1],
+      "ColorHex": "#F5DEB3",
+      "Material": "Plastic",
+      "Operation": "Union"
+    },
+    {
+      "Id": "external_coal_pile",
+      "ParentId": null,
+      "Shape": "Sphere",
+      "Position": [4.0, 0.2, 1.0],
+      "Rotation": [0, 0, 0],
+      "Scale": [2.5, 1.2, 2.5],
+      "ColorHex": "#121212",
+      "Material": "Rubber",
+      "Operation": "Union"
+    }
+  ],
+  "Timeline": [
+    {
+      "Time": 0.0,
+      "Action": "Move",
+      "TargetId": "cart_base",
+      "Value": [0, 0.6, -5.0],
+      "Duration": 4.0
+    },
+    {
+      "Time": 4.0,
+      "Action": "Move",
+      "TargetId": "cart_base",
+      "Value": [0, 0.6, 2.0],
+      "Duration": 4.0
+    }
+  ]
+}
