@@ -46,6 +46,13 @@
             </div>
         }
 
+        @if (!string.IsNullOrEmpty(buildingMessage))
+        {
+            <div style="position: absolute; top: 280px; left: 50%; transform: translateX(-50%); background-color: rgba(52, 152, 219, 0.9); padding: 15px 30px; border-radius: 8px; color: white; font-family: 'Times New Roman', serif; font-size: 1.5rem; font-weight: bold; border: 2px solid #2980b9; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                🚧 @buildingMessage
+            </div>
+        }
+
     <div style="position: absolute; top: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 10;">
         <button @onclick="BuildHotel" disabled="@(funds < COST_HOTEL)" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background-color: #f1c40f; color: #2c3e50; border: 2px solid #f39c12; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); font-weight: bold;">
             🏗️ Build Hotel ($@COST_HOTEL)
@@ -99,21 +106,51 @@
         <div class="map-overlay">
             <div class="map-container">
                 <button class="close-map-btn" @onclick="ToggleMap">X</button>
+
+                <!-- SVG Overlay for Routes -->
+                <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 0;">
+                    @foreach (var route in routes)
+                    {
+                        var tA = towns.FirstOrDefault(t => t.Name == route.CityA);
+                        var tB = towns.FirstOrDefault(t => t.Name == route.CityB);
+                        if (tA != null && tB != null)
+                        {
+                            bool isRouteConnected = tA.IsConnected && tB.IsConnected;
+                            string strokeColor = isRouteConnected ? "#3498db" : "rgba(128, 128, 128, 0.5)";
+                            int strokeWidth = isRouteConnected ? 4 : 2;
+                            string strokeDash = isRouteConnected ? "none" : "5, 5";
+
+                            <line x1="@tA.Left" y1="@tA.Top" x2="@tB.Left" y2="@tB.Top" 
+                                  stroke="@strokeColor" stroke-width="@strokeWidth" stroke-dasharray="@strokeDash" />
+                        }
+                    }
+                </svg>
+
                 @foreach (var town in towns)
                 {
                     <div class="town-node @(town == currentTown ? "current" : "")" 
-                         style="top: @town.Top; left: @town.Left; position: absolute;" 
-                         @onclick="() => TravelToTown(town)"
+                         style="top: @town.Top; left: @town.Left; position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; z-index: 1;" 
+                         @onclick="() => HandleTownClick(town)"
                          @onmouseover="() => ShowTownTooltip(town)"
                          @onmouseout="HideTownTooltip">
                         
-                        <span class="town-label">@town.Name</span>
+                        @if (town.IsConnected) {
+                            <div style="width: 20px; height: 20px; background-color: @(currentTown?.Name == town.Name ? "#e74c3c" : "#3498db"); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.8);"></div>
+                        } else {
+                            <div style="width: 20px; height: 20px; background-color: gray; border-radius: 50%; border: 3px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.8);"></div>
+                        }
+
+                        <span class="town-label" style="color: @(town.IsConnected ? "white" : "gray"); font-family: 'Times New Roman', serif; font-size: 1.2rem; font-weight: bold; text-shadow: 2px 2px 4px black; margin-top: 5px; white-space: nowrap;">@town.Name</span>
                         
                         @if (hoveredTown?.Name == town.Name)
                         {
                             <div style="position: absolute; top: -100%; left: 50%; transform: translate(-50%, -10px); background-color: rgba(0, 0, 0, 0.9); color: white; padding: 15px; border-radius: 8px; border: 2px solid #f39c12; white-space: nowrap; z-index: 100; font-family: 'Courier New', Courier, monospace; pointer-events: none; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
                                 <strong style="color: #f39c12; font-size: 1.1rem; border-bottom: 1px solid #f39c12; padding-bottom: 5px; margin-bottom: 5px; display: block;">@town.Name Buildings</strong>
-                                @GetTownBuildingsSummary(town.Name)
+                                @if (!town.IsConnected) {
+                                    <span style="color: #ccc;">Unconnected (Click to Build Track for $2500)</span>
+                                } else {
+                                    @GetTownBuildingsSummary(town.Name)
+                                }
                             </div>
                         }
                     </div>
@@ -138,6 +175,9 @@
     private Town hoveredTown;
     private string errorMessage = "";
     private string arrivalMessage = "";
+    private string buildingMessage = "";
+    private bool isBuildingTrack = false;
+    private bool gameWon = false;
     
     // Economy
     private int funds = 1000;
@@ -163,6 +203,7 @@
         public string CurrentTown { get; set; } = "";
         public List<string> TrainLoadout { get; set; } = new();
         public Dictionary<string, List<BuildingData>> TownLayouts { get; set; } = new();
+        public List<string> UnlockedTowns { get; set; } = new();
     }
 
     // Car Costs
@@ -182,16 +223,69 @@
         public string Name { get; set; } = "";
         public string Top { get; set; } = "";
         public string Left { get; set; } = "";
+        public bool IsConnected { get; set; } = true;
     }
 
     private List<Town> towns = new()
     {
-        new Town { Name = "St. Joseph", Top = "45%", Left = "55%" },
-        new Town { Name = "Omaha", Top = "42%", Left = "53%" },
-        new Town { Name = "Cheyenne", Top = "38%", Left = "35%" },
-        new Town { Name = "Denver", Top = "48%", Left = "33%" },
-        new Town { Name = "Salt Lake City", Top = "35%", Left = "22%" },
-        new Town { Name = "Sacramento", Top = "45%", Left = "10%" }
+        new Town { Name = "St. Joseph", Top = "45%", Left = "55%", IsConnected = true },
+        new Town { Name = "Omaha", Top = "42%", Left = "53%", IsConnected = true },
+        new Town { Name = "Cheyenne", Top = "38%", Left = "35%", IsConnected = true },
+        new Town { Name = "Denver", Top = "48%", Left = "33%", IsConnected = true },
+        new Town { Name = "Salt Lake City", Top = "35%", Left = "22%", IsConnected = true },
+        new Town { Name = "Sacramento", Top = "45%", Left = "10%", IsConnected = true },
+        new Town { Name = "San Francisco", Top = "52%", Left = "5%", IsConnected = false },
+        new Town { Name = "Los Angeles", Top = "68%", Left = "12%", IsConnected = false },
+        new Town { Name = "Santa Fe", Top = "65%", Left = "35%", IsConnected = false },
+        new Town { Name = "El Paso", Top = "82%", Left = "38%", IsConnected = false },
+        new Town { Name = "Dodge City", Top = "58%", Left = "48%", IsConnected = false },
+        new Town { Name = "Dallas", Top = "75%", Left = "50%", IsConnected = false },
+        new Town { Name = "Houston", Top = "85%", Left = "52%", IsConnected = false },
+        new Town { Name = "Kansas City", Top = "50%", Left = "58%", IsConnected = false },
+        new Town { Name = "St. Louis", Top = "48%", Left = "68%", IsConnected = false },
+        new Town { Name = "Chicago", Top = "32%", Left = "68%", IsConnected = false },
+        new Town { Name = "New York", Top = "45%", Left = "85%", IsConnected = false }
+    };
+
+    private class Route
+    {
+        public string CityA { get; set; } = "";
+        public string CityB { get; set; } = "";
+    }
+
+    private List<Route> routes = new()
+    {
+        // Initial Connected Routes (Spine)
+        new Route { CityA = "Sacramento", CityB = "Salt Lake City" },
+        new Route { CityA = "Salt Lake City", CityB = "Cheyenne" },
+        new Route { CityA = "Cheyenne", CityB = "Denver" },
+        new Route { CityA = "Cheyenne", CityB = "Omaha" },
+        new Route { CityA = "Denver", CityB = "Omaha" },
+        new Route { CityA = "Omaha", CityB = "St. Joseph" },
+
+        // Expansion Routes (West)
+        new Route { CityA = "Sacramento", CityB = "San Francisco" },
+        new Route { CityA = "Sacramento", CityB = "Los Angeles" },
+        new Route { CityA = "Salt Lake City", CityB = "Los Angeles" },
+        new Route { CityA = "Los Angeles", CityB = "Santa Fe" },
+        new Route { CityA = "Denver", CityB = "Santa Fe" },
+        new Route { CityA = "Santa Fe", CityB = "El Paso" },
+        
+        // Expansion Routes (Midwest/South)
+        new Route { CityA = "El Paso", CityB = "Dallas" },
+        new Route { CityA = "Santa Fe", CityB = "Dodge City" },
+        new Route { CityA = "Denver", CityB = "Dodge City" },
+        new Route { CityA = "Dodge City", CityB = "Dallas" },
+        new Route { CityA = "Dallas", CityB = "Houston" },
+        new Route { CityA = "Dodge City", CityB = "Kansas City" },
+        new Route { CityA = "St. Joseph", CityB = "Kansas City" },
+        
+        // Expansion Routes (East)
+        new Route { CityA = "Kansas City", CityB = "St. Louis" },
+        new Route { CityA = "St. Louis", CityB = "Chicago" },
+        new Route { CityA = "Omaha", CityB = "Chicago" },
+        new Route { CityA = "Chicago", CityB = "New York" },
+        new Route { CityA = "St. Louis", CityB = "New York" }
     };
 
     public static Action<string, string, float, float, float, float> OnBuildingPlacedAction;
@@ -328,6 +422,14 @@
                 funds = saveData.Funds;
                 currentTown = towns.FirstOrDefault(t => t.Name == saveData.CurrentTown) ?? towns.First();
                 
+                if (saveData.UnlockedTowns != null && saveData.UnlockedTowns.Count > 0)
+                {
+                    foreach(var t in towns)
+                    {
+                        if (saveData.UnlockedTowns.Contains(t.Name)) t.IsConnected = true;
+                    }
+                }
+
                 currentState = GameState.InGame;
                 StateHasChanged(); 
 
@@ -361,7 +463,8 @@
             Funds = funds,
             CurrentTown = currentTown.Name,
             TrainLoadout = loadout,
-            TownLayouts = townLayouts
+            TownLayouts = townLayouts,
+            UnlockedTowns = towns.Where(t => t.IsConnected).Select(t => t.Name).ToList()
         };
         var json = System.Text.Json.JsonSerializer.Serialize(saveData);
         await JSRuntime.InvokeVoidAsync("localStorage.setItem", "blazingRailroadsSave", json);
@@ -374,9 +477,133 @@
 
     private void ToggleMap()
     {
+        if (isBuildingTrack) return;
         isMapVisible = !isMapVisible;
         errorMessage = ""; // Clear errors when interacting with UI
         hoveredTown = null;
+    }
+
+    private async Task HandleTownClick(Town town)
+    {
+        if (isBuildingTrack) return;
+
+        if (town.IsConnected)
+        {
+            await TravelToTown(town);
+        }
+        else
+        {
+            // Verify Adjacency
+            bool canConnect = routes.Any(r => 
+                (r.CityA == town.Name && towns.First(t => t.Name == r.CityB).IsConnected) || 
+                (r.CityB == town.Name && towns.First(t => t.Name == r.CityA).IsConnected));
+
+            if (!canConnect)
+            {
+                errorMessage = "You can only build track to adjacent connected regions!";
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(3000);
+                    errorMessage = "";
+                    await InvokeAsync(StateHasChanged);
+                });
+                return;
+            }
+
+            if (funds >= 2500)
+            {
+                await BuildTrackToTown(town);
+            }
+            else
+            {
+                errorMessage = "Not enough funds to build new track. Costs $2500.";
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(3000);
+                    errorMessage = "";
+                    await InvokeAsync(StateHasChanged);
+                });
+            }
+        }
+    }
+
+    private async Task BuildTrackToTown(Town town)
+    {
+        isMapVisible = false; // Hide map to show building UI
+        funds -= 2500;
+        isBuildingTrack = true;
+        errorMessage = "";
+        
+        for (int i = 30; i > 0; i--)
+        {
+            buildingMessage = $"Building railway to {town.Name}... ({i}s left)";
+            StateHasChanged();
+            await Task.Delay(1000);
+        }
+
+        town.IsConnected = true;
+        isBuildingTrack = false;
+        buildingMessage = "";
+        arrivalMessage = $"Town {town.Name} is now connected to the railway system!";
+        StateHasChanged();
+
+        await SaveGameAsync();
+
+        CheckWinCondition();
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(5000);
+            arrivalMessage = "";
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void CheckWinCondition()
+    {
+        if (gameWon) return; // Already won
+
+        // BFS to find path from New York to San Francisco
+        var nY = towns.FirstOrDefault(t => t.Name == "New York");
+        var sF = towns.FirstOrDefault(t => t.Name == "San Francisco");
+
+        if (nY == null || !nY.IsConnected || sF == null || !sF.IsConnected) return;
+
+        var queue = new Queue<string>();
+        var visited = new HashSet<string>();
+        
+        queue.Enqueue(nY.Name);
+        visited.Add(nY.Name);
+
+        while(queue.Count > 0)
+        {
+            var curr = queue.Dequeue();
+            if (curr == sF.Name) 
+            {
+                TriggerWin();
+                return;
+            }
+
+            // Find all connected neighbors
+            var neighbors = routes.Where(r => r.CityA == curr || r.CityB == curr)
+                                  .Select(r => r.CityA == curr ? r.CityB : r.CityA)
+                                  .Where(n => !visited.Contains(n) && towns.First(t => t.Name == n).IsConnected);
+            
+            foreach(var neighbor in neighbors)
+            {
+                visited.Add(neighbor);
+                queue.Enqueue(neighbor);
+            }
+        }
+    }
+
+    private void TriggerWin()
+    {
+        gameWon = true;
+        funds += 1000000;
+        arrivalMessage = "TRANSCONTINENTAL RAILROAD COMPLETED! You received a $1,000,000 Bonus! You win!";
+        StateHasChanged();
+        _ = SaveGameAsync();
     }
 
     private void ShowTownTooltip(Town t)
